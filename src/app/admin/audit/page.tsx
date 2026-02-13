@@ -92,7 +92,7 @@ export default function AdminAuditLogsPage() {
                                                     {formatDate(log.created_at)}
                                                 </TableCell>
                                                 <TableCell className="font-medium">
-                                                    {(log.users as any)?.email || "Unknown"}
+                                                    {log.users?.email || "Unknown"}
                                                 </TableCell>
                                                 <TableCell>
                                                     <span className={`text-sm font-medium ${getActionColor(log.action)}`}>
@@ -100,7 +100,7 @@ export default function AdminAuditLogsPage() {
                                                     </span>
                                                 </TableCell>
                                                 <TableCell className="text-sm">
-                                                    {log.target_user_id || "N/A"}
+                                                    {log.resource_id || "N/A"}
                                                 </TableCell>
                                                 <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
                                                     {log.details ? JSON.stringify(log.details) : "—"}
