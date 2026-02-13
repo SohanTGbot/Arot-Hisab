@@ -91,7 +91,7 @@ export default function AdminAuditLogsPage() {
                                                     {formatDate(log.created_at)}
                                                 </TableCell>
                                                 <TableCell className="font-medium">
-                                                    {log.admin_email}
+                                                    {(log.users as any)?.email || "Unknown"}
                                                 </TableCell>
                                                 <TableCell>
                                                     <span className={`text-sm font-medium ${getActionColor(log.action)}`}>

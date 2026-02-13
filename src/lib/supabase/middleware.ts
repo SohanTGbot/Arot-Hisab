@@ -55,13 +55,15 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Admin-only routes
-    if (
-        request.nextUrl.pathname.startsWith("/admin") &&
-        user?.user_metadata?.role !== "admin"
-    ) {
-        const url = request.nextUrl.clone();
-        url.pathname = "/dashboard";
-        return NextResponse.redirect(url);
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+        // Strict email check for admin panel
+        const allowedAdminEmail = "sohanmandal2005@gmail.com";
+
+        if (user?.email !== allowedAdminEmail) {
+            const url = request.nextUrl.clone();
+            url.pathname = "/dashboard";
+            return NextResponse.redirect(url);
+        }
     }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

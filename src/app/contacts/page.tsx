@@ -21,7 +21,12 @@ export default function ContactsPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingContact, setEditingContact] = useState<any>(null);
-    const [formData, setFormData] = useState({ name: "", phone: "", type: "buyer", notes: "" });
+    const [formData, setFormData] = useState<{
+        name: string;
+        phone: string;
+        type: "buyer" | "seller" | "both";
+        notes: string;
+    }>({ name: "", phone: "", type: "buyer", notes: "" });
     const { t } = useI18n();
     const { format } = useNumberFormat();
 
