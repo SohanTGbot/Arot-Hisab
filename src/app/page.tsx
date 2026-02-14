@@ -85,18 +85,14 @@ function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, height: 0, borderBottomWidth: 0 }}
+            animate={{ opacity: 1, height: "auto", borderBottomWidth: "1px" }}
+            exit={{ opacity: 0, height: 0, borderBottomWidth: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden fixed inset-0 z-[60] bg-slate-950/98 backdrop-blur-3xl"
+            className="md:hidden absolute top-full left-0 w-full bg-slate-950/95 backdrop-blur-xl border-white/10 shadow-2xl overflow-hidden"
           >
-            {/* Background Gradient Blob */}
-            <div className="absolute top-[-20%] right-[-20%] w-[80%] h-[50%] bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[-20%] left-[-20%] w-[80%] h-[50%] bg-blue-600/20 blur-[100px] rounded-full pointer-events-none" />
-
-            <div className="flex flex-col h-full relative z-10 pt-24 px-8">
-              <nav className="flex flex-col gap-8">
+            <div className="p-4 space-y-4">
+              <nav className="flex flex-col gap-2">
                 {[
                   { name: "Features", icon: Zap, href: "/features" },
                   { name: "How it Works", icon: Calculator, href: "/how-it-works" },
@@ -104,63 +100,51 @@ function Navbar() {
                 ].map((item, i) => (
                   <motion.div
                     key={item.name}
-                    initial={{ opacity: 0, x: -30 }}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + (i * 0.1), type: "spring", stiffness: 100 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
                   >
                     <Link
                       href={item.href}
-                      className="group flex items-center gap-4 text-3xl font-bold text-slate-300 transition-colors"
+                      className="flex items-center gap-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 p-3 rounded-lg transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <div className="p-3 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-cyan-500/10 group-hover:border-cyan-500/30 transition-colors">
-                        <item.icon className="w-6 h-6 text-slate-400 group-hover:text-cyan-400 transition-colors" />
-                      </div>
-                      <span className="group-hover:text-white transition-colors">{item.name}</span>
+                      <item.icon className="w-5 h-5 text-cyan-500/70" />
+                      {item.name}
                     </Link>
                   </motion.div>
                 ))}
 
-                <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-2" />
+                <div className="h-px bg-white/10 my-1" />
 
                 <motion.div
-                  initial={{ opacity: 0, x: -30 }}
+                  initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
+                  transition={{ delay: 0.2 }}
                 >
                   <Link
                     href="/auth/signin"
-                    className="flex items-center gap-4 text-xl font-medium text-slate-300 mb-6 group"
+                    className="flex items-center gap-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 p-3 rounded-lg transition-all"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:border-white/20 transition-colors">
-                      <Users className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
-                    </div>
+                    <Users className="w-5 h-5 text-cyan-500/70" />
                     Sign In
                   </Link>
                 </motion.div>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
+                  transition={{ delay: 0.25 }}
+                  className="p-1"
                 >
-                  <Button asChild className="w-full h-16 text-xl rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-[0_0_30px_rgba(6,182,212,0.3)] border border-white/10">
+                  <Button asChild className="w-full h-10 text-sm font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-500/20">
                     <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
                       Get Started
-                      <ChevronRight className="w-5 h-5 ml-2 opacity-50" />
                     </Link>
                   </Button>
                 </motion.div>
               </nav>
-
-              <div className="mt-auto pb-12 flex flex-col items-center gap-4">
-                <div className="flex gap-6">
-                  <Link href="#" className="p-2 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"><Globe className="w-5 h-5" /></Link>
-                  <Link href="#" className="p-2 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"><Shield className="w-5 h-5" /></Link>
-                </div>
-                <p className="text-slate-600 text-sm font-medium">© 2026 Arot Hisab</p>
-              </div>
             </div>
           </motion.div>
         )}
