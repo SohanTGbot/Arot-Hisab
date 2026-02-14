@@ -20,11 +20,6 @@ export function useSavedContacts(type?: 'seller' | 'buyer') {
             if (!result.success) throw new Error(result.error);
             return result.data;
         },
-        staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
-        gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
-        retry: 2, // Retry failed requests twice
-        refetchOnWindowFocus: false, // Don't refetch on window focus
-        refetchOnMount: false, // Don't refetch on mount if data exists
     });
 }
 

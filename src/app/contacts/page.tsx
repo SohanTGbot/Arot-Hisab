@@ -50,11 +50,21 @@ export default function ContactsPage() {
             if (editingContact) {
                 await updateContact.mutateAsync({
                     id: editingContact.id,
-                    updates: formData
+                    updates: {
+                        name: formData.name,
+                        phone: formData.phone || null,
+                        contact_type: formData.type,
+                        notes: formData.notes || null,
+                    }
                 });
                 toast.success(t("notifications.contactUpdated"));
             } else {
-                await createContact.mutateAsync(formData);
+                await createContact.mutateAsync({
+                    name: formData.name,
+                    phone: formData.phone || null,
+                    contact_type: formData.type,
+                    notes: formData.notes || null,
+                });
                 toast.success(t("notifications.contactAdded"));
             }
             setIsDialogOpen(false);
@@ -70,7 +80,7 @@ export default function ContactsPage() {
         setFormData({
             name: contact.name,
             phone: contact.phone || "",
-            type: contact.type,
+            type: (contact.contact_type as "buyer" | "seller" | "both") || "buyer",
             notes: contact.notes || ""
         });
         setIsDialogOpen(true);
@@ -87,7 +97,7 @@ export default function ContactsPage() {
         }
     };
 
-    if (isLoading) {
+    if (isLoading && allContacts.length === 0) {
         return (
             <DashboardLayout>
                 <div className="space-y-6">
@@ -163,7 +173,7 @@ export default function ContactsPage() {
                                         <select
                                             id="type"
                                             value={formData.type}
-                                            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                            onChange={(e) => setFormData({ ...formData, type: e.target.value as "buyer" | "seller" | "both" })}
                                             className="w-full rounded-md border border-input bg-background px-3 py-2"
                                             required
                                         >

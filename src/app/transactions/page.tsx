@@ -53,7 +53,7 @@ export default function TransactionsPage() {
         return transactions.reduce((sum: number, t: any) => sum + (t.commission_amount || 0), 0);
     }, [transactions]);
 
-    if (isLoading) {
+    if (isLoading && allTransactions.length === 0) {
         return (
             <DashboardLayout>
                 <TableSkeleton />
@@ -85,10 +85,10 @@ export default function TransactionsPage() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => exportToPDF(transactions, "Transaction Report", language)}>
+                                <DropdownMenuItem onClick={() => exportToPDF(transactions as any[], "Transaction Report", language)}>
                                     Export as PDF
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => exportToExcel(transactions, "transactions", language)}>
+                                <DropdownMenuItem onClick={() => exportToExcel(transactions as any[], "transactions", language)}>
                                     Export as Excel
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
