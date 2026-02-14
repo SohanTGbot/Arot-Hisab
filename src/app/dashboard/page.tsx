@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { calculateTransaction } from "@/lib/calculations";
+import { MobileFitContainer } from "@/components/mobile-fit-container";
+import { LatestCalculationCard } from "@/components/dashboard/latest-calculation-card";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -171,89 +173,26 @@ export default function DashboardPage() {
 
     return (
         <DashboardLayout>
-            <div className="space-y-3 lg:space-y-6">
+            {/* Mobile View - Scaled, No Scroll */}
+            <div className="lg:hidden h-full">
+                <MobileFitContainer headerHeight={80} bottomNavHeight={96}>
+                    <div className="space-y-3 px-1 pt-0 pb-1">
+                        <LatestCalculationCard
+                            currentCalculation={currentCalculation}
+                            latestTransaction={latestTransaction}
+                        />
+                        <QuickEntryCard onSubmit={handleQuickEntry} />
+                    </div>
+                </MobileFitContainer>
+            </div>
 
-
-                {/* Compact Latest Calculation - Photo Style (ALL SCREENS) */}
-                <Card className="glass-card border-0 lg:mb-6">
-                    <CardHeader className="pb-2 pt-3 px-3 sm:px-4">
-                        <div className="flex items-center justify-between">
-                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                                {t("dashboard.latestCalculation")}
-                            </CardTitle>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => router.push('/transactions')}
-                                className="text-blue-600 h-8"
-                            >
-                                {t("dashboard.viewHistory")}
-                            </Button>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="pt-0 pb-3 px-3 sm:px-4">
-                        {/* Compact 2-Column Layout */}
-                        <div className="grid grid-cols-2 gap-3 text-xs">
-                            {/* Seller */}
-                            <div>
-                                <div className="text-muted-foreground uppercase mb-0.5 tracking-wider font-semibold text-[10px]">{t("dashboard.calcSellerName")}</div>
-                                <div className="font-medium truncate text-sm">
-                                    {currentCalculation?.sellerName || latestTransaction?.seller_name || '-'}
-                                </div>
-                            </div>
-                            {/* Buyer */}
-                            <div>
-                                <div className="text-muted-foreground uppercase mb-0.5 tracking-wider font-semibold text-[10px]">{t("dashboard.calcBuyerName")}</div>
-                                <div className="font-medium truncate text-sm">
-                                    {currentCalculation?.buyerName || latestTransaction?.buyer_name || '-'}
-                                </div>
-                            </div>
-                            {/* Gross WT */}
-                            <div>
-                                <div className="text-muted-foreground uppercase mb-0.5 tracking-wider font-semibold text-[10px]">{t("dashboard.calcGrossWeight")}</div>
-                                <div className="font-medium text-sm">
-                                    {format(currentCalculation?.grossWeight || latestTransaction?.gross_weight_kg || 0)}
-                                </div>
-                            </div>
-                            {/* Net WT */}
-                            <div>
-                                <div className="text-muted-foreground uppercase mb-0.5 tracking-wider font-semibold text-[10px]">{t("dashboard.calcNetWeight")}</div>
-                                <div className="font-medium text-sm">
-                                    {format(currentCalculation?.netWeight || latestTransaction?.net_weight_kg || 0)}
-                                </div>
-                            </div>
-                            {/* Rate */}
-                            <div>
-                                <div className="text-muted-foreground uppercase mb-0.5 tracking-wider font-semibold text-[10px]">{t("dashboard.calcRate")}</div>
-                                <div className="font-medium text-sm">
-                                    {formatCurrency(currentCalculation?.ratePerKg || latestTransaction?.rate_per_kg || 0)}
-                                </div>
-                            </div>
-                            {/* Base Amount */}
-                            <div>
-                                <div className="text-muted-foreground uppercase mb-0.5 tracking-wider font-semibold text-[10px]">{t("dashboard.calcBaseAmount")}</div>
-                                <div className="font-medium text-sm">
-                                    {formatCurrency(currentCalculation?.baseAmount || latestTransaction?.base_amount || 0)}
-                                </div>
-                            </div>
-                            {/* Final Amount */}
-                            <div className="col-span-2 mt-1 pt-2 border-t border-border/50">
-                                <div className="flex items-center justify-between">
-                                    <div className="text-muted-foreground uppercase tracking-wider font-bold text-[10px]">{t("dashboard.calcFinalAmount")}</div>
-                                    <div className="text-lg sm:text-xl font-bold text-primary">
-                                        {formatCurrency(currentCalculation?.finalAmount || latestTransaction?.final_amount || 0)}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </CardContent>
-                </Card>
-
-                {/* Quick Entry Card - Mobile Only */}
-                <div className="lg:hidden">
-                    <QuickEntryCard onSubmit={handleQuickEntry} />
-                </div>
+            {/* Desktop Content - Hidden on Mobile */}
+            <div className="hidden lg:block space-y-6">
+                <LatestCalculationCard
+                    currentCalculation={currentCalculation}
+                    latestTransaction={latestTransaction}
+                    className="mb-6"
+                />
 
                 {/* Stats Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -305,7 +244,6 @@ export default function DashboardPage() {
                             onClick={() => router.push("/contacts")}
                             gradient="from-purple-500 to-pink-500"
                         />
-
                     </div>
                 </motion.div>
 
@@ -361,10 +299,7 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
                 </motion.div>
-
-
             </div>
         </DashboardLayout>
     );
 }
-
