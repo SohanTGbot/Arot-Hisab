@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Target, Users2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function AboutPage() {
     return (
@@ -13,12 +14,12 @@ export default function AboutPage() {
                         Arot Hisab
                     </Link>
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" asChild>
-                            <Link href="/auth/signin">Sign In</Link>
-                        </Button>
-                        <Button asChild>
-                            <Link href="/auth/signup">Get Started</Link>
-                        </Button>
+                        <Link href="/auth/signin" className={cn(buttonVariants({ variant: "ghost" }))}>
+                            Sign In
+                        </Link>
+                        <Link href="/auth/signup" className={cn(buttonVariants({ variant: "default" }))}>
+                            Get Started
+                        </Link>
                     </div>
                 </div>
             </header>
@@ -97,11 +98,9 @@ export default function AboutPage() {
                             <p className="text-muted-foreground text-lg">
                                 Experience the difference Arot Hisab can make for your business
                             </p>
-                            <Button size="lg" asChild>
-                                <Link href="/auth/signup">
-                                    Get Started Free
-                                </Link>
-                            </Button>
+                            <Link href="/auth/signup" className={cn(buttonVariants({ size: "lg" }))}>
+                                Get Started Free
+                            </Link>
                         </CardContent>
                     </Card>
                 </div>
