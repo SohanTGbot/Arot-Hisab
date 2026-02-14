@@ -11,6 +11,7 @@ import { CookieConsent } from "@/components/cookie-consent";
 import { I18nProvider, useI18n } from "@/lib/i18n/provider";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { SkipNavigation } from "@/components/skip-navigation";
+import { TouchRipple } from "@/components/ui/touch-ripple";
 import "@/lib/i18n/config"; // Initialize i18n
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -60,6 +61,7 @@ export default function RootLayout({
               <ErrorBoundary>
                 <I18nProvider>
                   <RootLayoutContent>
+                    <TouchRipple />
                     <SkipNavigation />
                     {process.env.NEXT_PUBLIC_GA_ID && (
                       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />

@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Calculator, TrendingUp, Users, Zap, Shield, Globe, ArrowRight, Sparkles, ChevronRight, Menu, X } from "lucide-react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
 import UnderwaterBackground from "@/components/Hero/UnderwaterBackground";
 import { cn } from "@/lib/utils";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import Image from "next/image";
 
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -34,14 +35,16 @@ function Navbar() {
       )}
     >
       <div className="container flex items-center justify-between px-6">
-        <Link href="/" className="font-bold text-2xl text-white flex items-center gap-3 group">
-          <div className="relative">
-            <Sparkles className="h-6 w-6 text-cyan-400 absolute animate-pulse blur-sm group-hover:scale-125 transition-transform" />
-            <Sparkles className="h-6 w-6 text-cyan-400 relative z-10 group-hover:rotate-12 transition-transform" />
-          </div>
-          <span className="bg-gradient-to-r from-white via-white to-cyan-200 bg-clip-text text-transparent tracking-tight font-sans">
-            Arot Hisab
-          </span>
+        <Link href="/" className="font-bold text-2xl text-white flex items-center gap-3">
+          <Image
+            src="/logo.png"
+            alt="Arot Hisab"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="w-auto h-10 object-contain hover:scale-105 transition-transform duration-300"
+            priority
+          />
         </Link>
 
         {/* Desktop Nav */}
@@ -79,32 +82,89 @@ function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden absolute top-full left-0 w-full bg-slate-950 border-b border-white/10 p-6 space-y-4"
-        >
-          <nav className="flex flex-col gap-4">
-            {["Features", "How it Works", "Pricing"].map((item) => (
-              <Link
-                key={item}
-                href="#"
-                className="text-base font-medium text-slate-300 hover:text-cyan-400 block"
-              >
-                {item}
-              </Link>
-            ))}
-            <hr className="border-white/10 my-2" />
-            <Link href="/auth/signin" className="text-base font-medium text-slate-300 block">
-              Sign In
-            </Link>
-            <Button asChild className="w-full rounded-full bg-cyan-600 hover:bg-cyan-500">
-              <Link href="/auth/signup">Get Started</Link>
-            </Button>
-          </nav>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden fixed inset-0 z-[60] bg-slate-950/98 backdrop-blur-3xl"
+          >
+            {/* Background Gradient Blob */}
+            <div className="absolute top-[-20%] right-[-20%] w-[80%] h-[50%] bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[-20%] left-[-20%] w-[80%] h-[50%] bg-blue-600/20 blur-[100px] rounded-full pointer-events-none" />
+
+            <div className="flex flex-col h-full relative z-10 pt-24 px-8">
+              <nav className="flex flex-col gap-8">
+                {[
+                  { name: "Features", icon: Zap, href: "/features" },
+                  { name: "How it Works", icon: Calculator, href: "/how-it-works" },
+                  { name: "Pricing", icon: TrendingUp, href: "/pricing" }
+                ].map((item, i) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + (i * 0.1), type: "spring", stiffness: 100 }}
+                  >
+                    <Link
+                      href={item.href}
+                      className="group flex items-center gap-4 text-3xl font-bold text-slate-300 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <div className="p-3 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-cyan-500/10 group-hover:border-cyan-500/30 transition-colors">
+                        <item.icon className="w-6 h-6 text-slate-400 group-hover:text-cyan-400 transition-colors" />
+                      </div>
+                      <span className="group-hover:text-white transition-colors">{item.name}</span>
+                    </Link>
+                  </motion.div>
+                ))}
+
+                <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-2" />
+
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Link
+                    href="/auth/signin"
+                    className="flex items-center gap-4 text-xl font-medium text-slate-300 mb-6 group"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:border-white/20 transition-colors">
+                      <Users className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+                    </div>
+                    Sign In
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <Button asChild className="w-full h-16 text-xl rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-[0_0_30px_rgba(6,182,212,0.3)] border border-white/10">
+                    <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
+                      Get Started
+                      <ChevronRight className="w-5 h-5 ml-2 opacity-50" />
+                    </Link>
+                  </Button>
+                </motion.div>
+              </nav>
+
+              <div className="mt-auto pb-12 flex flex-col items-center gap-4">
+                <div className="flex gap-6">
+                  <Link href="#" className="p-2 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"><Globe className="w-5 h-5" /></Link>
+                  <Link href="#" className="p-2 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all"><Shield className="w-5 h-5" /></Link>
+                </div>
+                <p className="text-slate-600 text-sm font-medium">© 2026 Arot Hisab</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
@@ -205,7 +265,7 @@ export default function LandingPage() {
 
           {/* Main Heading with Text Reveal */}
           <div className="space-y-6 max-w-6xl mx-auto">
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tight text-white leading-[0.9] drop-shadow-2xl">
+            <h1 className="text-5xl md:text-8xl lg:text-9xl font-extrabold tracking-tight text-white leading-[0.9] drop-shadow-2xl">
               <span className="block opacity-90">Experience the</span>
               <span className="block mt-2">
                 <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent pb-4">
@@ -219,7 +279,7 @@ export default function LandingPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1, duration: 1 }}
             >
-              <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-light mt-6">
+              <p className="text-lg md:text-2xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-light mt-6 px-4">
                 The ultimate calculation engine for fish wholesale markets. <br className="hidden md:block" /> Fast, accurate, and designed for high-volume transactions.
               </p>
             </motion.div>
@@ -232,13 +292,12 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
             className="flex flex-col sm:flex-row gap-6 justify-center pt-12 relative z-30"
           >
-            <Button size="lg" asChild className="h-16 px-10 text-xl font-bold rounded-full shadow-[0_0_50px_rgba(6,182,212,0.4)] bg-white text-cyan-950 hover:bg-cyan-50 hover:scale-105 transition-all duration-300 group ring-4 ring-white/10">
+            <Button size="lg" asChild className="h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl font-bold rounded-full shadow-[0_0_50px_rgba(6,182,212,0.4)] bg-white text-cyan-950 hover:bg-cyan-50 hover:scale-105 transition-all duration-300 group ring-4 ring-white/10 w-full sm:w-auto">
               <Link href="/auth/signup">
                 Start Free Trial
-                <ChevronRight className="h-5 w-5 ml-1 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <Button size="lg" variant="ghost" asChild className="h-16 px-10 text-xl font-medium rounded-full text-white hover:bg-white/10 hover:text-white border border-white/10 backdrop-blur-md transition-all hover:border-white/20">
+            <Button size="lg" variant="ghost" asChild className="h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl font-medium rounded-full text-white hover:bg-white/10 hover:text-white border border-white/10 backdrop-blur-md transition-all hover:border-white/20 w-full sm:w-auto">
               <Link href="/features">
                 See How It Works
               </Link>
@@ -297,7 +356,7 @@ function FeatureSection({ features }: { features: any[] }) {
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
           >
-            <SpotlightCard className="h-full p-10 border-white/5 bg-slate-900/40 backdrop-blur-sm">
+            <SpotlightCard className="h-full p-6 md:p-10 border-white/5 bg-slate-900/40 backdrop-blur-sm">
               <div className={`inline-flex items-center justify-center p-4 rounded-2xl bg-gradient-to-br ${feature.color} mb-8 shadow-lg ${feature.shadow} group-hover:scale-110 transition-transform duration-500`}>
                 <feature.icon className="h-8 w-8 text-white" />
               </div>
@@ -335,18 +394,17 @@ function CTASection() {
           <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-cyan-950/50 to-transparent" />
         </div>
 
-        <div className="relative z-10 p-12 md:p-32 text-center space-y-12">
-          <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter">
+        <div className="relative z-10 p-8 md:p-32 text-center space-y-8 md:space-y-12">
+          <h2 className="text-4xl md:text-7xl font-black text-white tracking-tighter">
             Ready to <span className="text-cyan-400">Simplify?</span>
           </h2>
-          <p className="text-slate-300 text-2xl max-w-2xl mx-auto font-light">
+          <p className="text-slate-300 text-lg md:text-2xl max-w-2xl mx-auto font-light">
             Join fish market operators who trust Arot Hisab for their daily transactions.
           </p>
-          <div className="pt-8">
-            <Button size="lg" asChild className="h-20 px-16 text-2xl font-bold rounded-full shadow-[0_0_40px_rgba(6,182,212,0.5)] bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white transition-all hover:scale-105 ring-8 ring-cyan-900/20">
+          <div className="pt-4 md:pt-8">
+            <Button size="lg" asChild className="h-16 md:h-20 px-10 md:px-16 text-xl md:text-2xl font-bold rounded-full shadow-[0_0_40px_rgba(6,182,212,0.5)] bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white transition-all hover:scale-105 ring-8 ring-cyan-900/20 w-full sm:w-auto">
               <Link href="/auth/signup">
                 Get Started Free
-                <ArrowRight className="h-6 w-6 ml-3" />
               </Link>
             </Button>
           </div>
@@ -362,12 +420,14 @@ function Footer() {
       <div className="container px-6 py-20">
         <div className="grid gap-16 md:grid-cols-4">
           <div className="space-y-6">
-            <h3 className="font-bold text-2xl flex items-center gap-3 text-white">
-              <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              Arot Hisab
-            </h3>
+            <Link href="/" className="block relative h-16 w-48 mb-4">
+              <Image
+                src="/logo.png"
+                alt="Arot Hisab"
+                fill
+                className="object-contain object-left"
+              />
+            </Link>
             <p className="text-base text-slate-400 leading-relaxed max-w-xs">
               Specialized calculator and management system designed for the specific needs of fish wholesale markets.
             </p>

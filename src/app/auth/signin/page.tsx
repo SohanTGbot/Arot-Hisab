@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { PremiumInput } from "@/components/ui/premium-input";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import Image from "next/image";
 
 export default function SignInPage() {
     const [loading, setLoading] = useState(false);
@@ -61,8 +62,8 @@ export default function SignInPage() {
     };
 
     return (
-        <div className="w-full max-w-md mx-auto relative z-10">
-            <SpotlightCard className="p-8 border-white/5 bg-slate-900/40 backdrop-blur-md">
+        <div className="w-full max-w-md mx-auto relative z-10 px-4 sm:px-0">
+            <SpotlightCard className="p-6 md:p-8 border-white/5 bg-slate-900/40 backdrop-blur-md">
                 <div className="space-y-8">
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -72,9 +73,17 @@ export default function SignInPage() {
                     >
                         <div className="flex justify-center">
                             <div className="relative">
-                                <div className="absolute inset-0 bg-cyan-500/20 blur-xl animate-pulse-slow rounded-full" />
-                                <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-blue-500/10 shadow-[0_0_25px_rgba(6,182,212,0.2)] group border border-white/10 relative z-10 backdrop-blur-sm">
-                                    <Fish className="w-10 h-10 text-cyan-400 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] animate-float" />
+                                <div className="absolute -inset-4 bg-cyan-500/20 blur-xl animate-pulse-slow rounded-full" />
+                                <div className="relative flex justify-center">
+                                    <Image
+                                        src="/logo.png"
+                                        alt="Arot Hisab"
+                                        width={0}
+                                        height={0}
+                                        sizes="100vw"
+                                        className="w-auto h-20 object-contain drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                                        priority
+                                    />
                                 </div>
                             </div>
                         </div>
