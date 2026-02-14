@@ -4,17 +4,22 @@ import { updateSession } from "@/lib/supabase/middleware";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function middleware(request: NextRequest) {
-    // Rate Limiting for API routes
-    if (request.nextUrl.pathname.startsWith('/api')) {
-        const ip = request.headers.get('x-forwarded-for') || 'ip';
-        const isAllowed = await rateLimit(ip);
+    try {
+        // Rate Limiting for API routes
+        if (request.nextUrl.pathname.startsWith('/api')) {
+            const ip = request.headers.get('x-forwarded-for') || 'ip';
+            const isAllowed = await rateLimit(ip);
 
-        if (!isAllowed) {
-            return new NextResponse('Too Many Requests', { status: 429 });
+            if (!isAllowed) {
+                return new NextResponse('Too Many Requests', { status: 429 });
+            }
         }
-    }
 
-    return await updateSession(request);
+        return await updateSession(request);
+    } catch (e) {
+        console.error("Middleware Error:", e);
+        return new NextResponse('Internal Server Error', { status: 500 });
+    }
 }
 
 export const config = {
