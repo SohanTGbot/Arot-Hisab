@@ -89,11 +89,15 @@ export class AnimationController {
     private draw() {
         const img = this.frameLoader.getFrame(this.currentFrameIndex);
 
-        // Clear canvas
-        this.ctx.clearRect(0, 0, this.width, this.height);
-
         if (img) {
+            // Only clear and draw if we have the frame
+            this.ctx.clearRect(0, 0, this.width, this.height);
             this.drawCover(img);
+        } else {
+            // If frame is missing, do nothing (keep previous frame)
+            // Optionally, we could try to draw the previous frame explicitly if needed,
+            // but relying on the canvas state is usually fine for a single missed frame.
+            // console.warn(`Frame ${this.currentFrameIndex} not ready`);
         }
     }
 

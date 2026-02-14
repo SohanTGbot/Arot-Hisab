@@ -81,19 +81,20 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="fixed top-0 z-50 w-full border-b bg-background/0 backdrop-blur-sm transition-all duration-300 hover:bg-background/80">
+      {/* Header */}
+      <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-background/0 backdrop-blur-md transition-all duration-300 hover:bg-black/40">
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="font-bold text-xl text-white flex items-center gap-2 drop-shadow-md">
-            <Sparkles className="h-5 w-5 text-primary" />
-            Arot Hisab
+            <Sparkles className="h-5 w-5 text-cyan-400 animate-pulse" />
+            <span className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">Arot Hisab</span>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild className="font-semibold text-white hover:text-white hover:bg-white/10">
+            <Button variant="ghost" asChild className="font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-colors">
               <Link href="/auth/signin">
                 Sign In
               </Link>
             </Button>
-            <Button asChild size="default" className="font-semibold shadow-lg shadow-primary/20">
+            <Button asChild size="default" className="font-semibold shadow-lg shadow-cyan-500/20 bg-cyan-600 hover:bg-cyan-500 text-white border border-cyan-400/30">
               <Link href="/auth/signup">
                 Get Started
                 <ArrowRight className="h-4 w-4 ml-1" />
@@ -108,9 +109,9 @@ export default function LandingPage() {
         {/* Background Animation */}
         <div className="absolute inset-0 z-0 bg-black">
           <FishAnimation frameCount={240} />
-          {/* Gradient Overlay for text readability and transition */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-background z-10 pointer-events-none" />
-          <div className="absolute inset-0 bg-black/20 z-10 pointer-events-none" />
+          {/* Enhanced Gradient Overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40 z-10 pointer-events-none" />
         </div>
 
         <div className="container relative z-20 px-4 pt-20 text-center space-y-8">
@@ -120,9 +121,9 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white text-sm font-semibold border border-white/20 backdrop-blur-md shadow-lg">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white text-sm font-semibold border border-white/10 backdrop-blur-xl shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:bg-white/10 transition-colors cursor-default">
               <Sparkles className="h-4 w-4 text-cyan-400" />
-              Trusted by fish market operators
+              Trusted by fish market operators 🐟
             </span>
           </motion.div>
 
@@ -135,7 +136,7 @@ export default function LandingPage() {
           >
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white drop-shadow-2xl">
               Experience the
-              <span className="block text-primary bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 mt-2">
+              <span className="block mt-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent pb-2">
                 Depth of Efficiency
               </span>
             </h1>
@@ -146,9 +147,9 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-2xl text-gray-200 max-w-2xl mx-auto leading-relaxed drop-shadow-md font-light"
+            className="text-lg md:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed drop-shadow-md font-light"
           >
-            The ultimate calculation engine for fish wholesale markets. Fast, accurate, and designed for high-volume transactions.
+            The ultimate calculation engine for fish wholesale markets. Fast, accurate, and designed for high-volume transactions 🌊.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -158,15 +159,15 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-6 justify-center pt-8"
           >
-            <Button size="lg" asChild className="h-14 px-10 text-lg font-bold rounded-full shadow-xl shadow-cyan-500/20 hover:scale-105 transition-transform duration-300">
+            <Button size="lg" asChild className="h-16 px-10 text-xl font-bold rounded-full shadow-[0_0_30px_rgba(6,182,212,0.4)] bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-t-white/20 border-b-black/20 hover:scale-105 transition-all duration-300">
               <Link href="/auth/signup">
-                Start Free Trial
-                <ArrowRight className="h-5 w-5 ml-2" />
+                Start Free Trial 🚀
+                <ArrowRight className="h-6 w-6 ml-2" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="h-14 px-10 text-lg font-bold rounded-full border-white/30 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm transition-all">
+            <Button size="lg" variant="outline" asChild className="h-16 px-10 text-xl font-bold rounded-full border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white backdrop-blur-md shadow-lg hover:shadow-white/5 transition-all">
               <Link href="/features">
-                See How It Works
+                See How It Works 🎥
               </Link>
             </Button>
           </motion.div>
@@ -177,10 +178,10 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 text-white/50 animate-bounce"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 text-white/30 animate-bounce"
         >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-2 bg-white/50 rounded-full" />
+          <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2 bg-black/20 backdrop-blur-sm">
+            <div className="w-1 h-2 bg-white/60 rounded-full" />
           </div>
         </motion.div>
       </section>
@@ -243,8 +244,8 @@ function FeatureSection({ features }: { features: any[] }) {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-foreground">
-            Everything You Need
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-foreground drop-shadow-sm">
+            Everything You Need ⚡
           </h2>
           <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
             Powerful features designed for fish market operators
@@ -263,12 +264,12 @@ function FeatureSection({ features }: { features: any[] }) {
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="h-full border hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 bg-card/50 backdrop-blur-sm">
+            <Card className="h-full border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:-translate-y-2 bg-white/5 backdrop-blur-md">
               <CardHeader>
                 <div className={`inline-block p-4 rounded-2xl bg-gradient-to-br ${feature.color} mb-4 w-fit shadow-lg`}>
                   <feature.icon className="h-7 w-7 text-white" />
                 </div>
-                <CardTitle className="text-foreground text-2xl">
+                <CardTitle className="text-foreground text-2xl font-bold">
                   {feature.title}
                 </CardTitle>
               </CardHeader>
@@ -295,9 +296,9 @@ function CTASection() {
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="relative overflow-hidden rounded-3xl bg-primary text-primary-foreground max-w-5xl mx-auto shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 to-blue-700 text-primary-foreground max-w-5xl mx-auto shadow-2xl border border-white/10">
         {/* Abstract Background pattern */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
+        <div className="absolute top-0 left-0 w-full h-full opacity-20">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -309,14 +310,14 @@ function CTASection() {
         </div>
 
         <div className="relative z-10 p-12 md:p-20 text-center space-y-8">
-          <h2 className="text-4xl md:text-5xl font-bold">
-            Ready to Simplify Your Calculations?
+          <h2 className="text-4xl md:text-5xl font-bold drop-shadow-md">
+            Ready to Simplify Your Calculations? 🚀
           </h2>
-          <p className="text-primary-foreground/80 text-xl max-w-2xl mx-auto font-medium">
+          <p className="text-white/90 text-xl max-w-2xl mx-auto font-medium">
             Join fish market operators who trust Arot Hisab for their daily transactions.
           </p>
           <div className="pt-6">
-            <Button size="lg" variant="secondary" asChild className="h-14 px-10 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all">
+            <Button size="lg" variant="secondary" asChild className="h-16 px-10 text-xl font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all bg-white text-cyan-700 hover:bg-gray-100">
               <Link href="/auth/signup">
                 Get Started Free
                 <ArrowRight className="h-5 w-5 ml-2" />

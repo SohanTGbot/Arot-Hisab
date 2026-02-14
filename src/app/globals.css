@@ -62,6 +62,15 @@
       height: 0;
     }
   }
+
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-gradient: gradient 8s linear infinite;
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 }
 
 /*
@@ -246,6 +255,12 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/50;
   }
+}
+
+/* ===== Gradient Animation Utility ===== */
+@utility animate-gradient {
+  background-size: 200% auto;
+  animation: gradient 8s linear infinite;
 }
 
 /* ===== Animation Utilities ===== */

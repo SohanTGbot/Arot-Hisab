@@ -5,30 +5,29 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema, type SignInFormData } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/provider";
 import { signInWithEmail } from "@/lib/actions/auth";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, LogIn, ArrowRight, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { Loader2, Mail, Lock, Fish } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { GlassInput } from "@/components/ui/glass-input";
+import { GlassCard } from "@/components/ui/glass-card";
 
 export default function SignInPage() {
     const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
     const { t } = useI18n();
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm<SignInFormData>({
         resolver: zodResolver(signInSchema),
+        mode: "onChange",
     });
 
     const onSubmit = async (data: SignInFormData) => {
@@ -45,275 +44,140 @@ export default function SignInPage() {
                 throw new Error(result.error);
             }
 
-            toast.success("Signed in successfully!");
-            router.push("/dashboard");
-            router.refresh();
+            // Success Animation wait
+            setTimeout(() => {
+                toast.success("Welcome back!", {
+                    description: "You have successfully signed in.",
+                });
+                router.push("/dashboard");
+                router.refresh();
+            }, 800);
+
         } catch (error: any) {
             toast.error(error.message || "Failed to sign in");
-        } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center p-4 md:p-6 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10">
-            {/* Animated Background Elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.3, 0.5, 0.3],
-                    }}
-                    transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                    }}
-                />
-                <motion.div
-                    className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-                    animate={{
-                        scale: [1, 1.3, 1],
-                        opacity: [0.3, 0.6, 0.3],
-                    }}
-                    transition={{
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 1
-                    }}
-                />
-
-                {/* Floating particles */}
-                {[...Array(6)].map((_, i) => (
+        <div className="w-full max-w-md mx-auto">
+            <GlassCard>
+                <div className="space-y-8">
                     <motion.div
-                        key={i}
-                        className="absolute w-2 h-2 bg-primary/20 rounded-full"
-                        style={{
-                            left: `${20 + i * 15}%`,
-                            top: `${10 + i * 10}%`,
-                        }}
-                        animate={{
-                            y: [-20, 20, -20],
-                            opacity: [0.2, 0.5, 0.2],
-                        }}
-                        transition={{
-                            duration: 3 + i * 0.5,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: i * 0.3,
-                        }}
-                    />
-                ))}
-            </div>
-
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="relative z-10 w-full max-w-md"
-            >
-                <Card className="glass-card border-border/50 shadow-2xl backdrop-blur-xl overflow-hidden">
-                    {/* Gradient overlay at top */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-blue-500 to-primary" />
-
-                    <CardHeader className="space-y-4 text-center pb-8 pt-8">
-                        <motion.div
-                            initial={{ scale: 0, rotate: -180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            transition={{
-                                delay: 0.2,
-                                type: "spring",
-                                stiffness: 200,
-                                damping: 15
-                            }}
-                            className="mx-auto w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/70 flex items-center justify-center shadow-lg ring-4 ring-primary/10 relative overflow-hidden"
-                        >
-                            {/* Shimmer effect */}
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                                animate={{
-                                    x: ['-100%', '200%'],
-                                }}
-                                transition={{
-                                    duration: 2,
-                                    repeat: Infinity,
-                                    ease: "linear",
-                                    repeatDelay: 3
-                                }}
-                            />
-                            <LogIn className="w-10 h-10 text-primary-foreground relative z-10" />
-                        </motion.div>
-
-                        <div className="space-y-2">
-                            <CardTitle className="text-4xl font-bold bg-gradient-to-r from-primary via-blue-600 to-primary bg-clip-text text-transparent animate-gradient">
-                                {t("common.welcome")}
-                            </CardTitle>
-                            <CardDescription className="text-base text-muted-foreground">
-                                {t("auth.signIn")} <Sparkles className="w-4 h-4 inline text-primary" />
-                            </CardDescription>
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-center space-y-4"
+                    >
+                        <div className="flex justify-center">
+                            <div className="w-16 h-16 bg-gradient-to-tr from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 group">
+                                <Fish className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" />
+                            </div>
                         </div>
-                    </CardHeader>
+                        <div className="space-y-1">
+                            <h2 className="text-3xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
+                                {t("auth.welcomeBack")}
+                            </h2>
+                            <p className="text-slate-400 text-xs tracking-wider uppercase font-medium">
+                                {t("auth.welcomeBackDesc")}
+                            </p>
+                        </div>
+                    </motion.div>
 
-                    <CardContent className="space-y-6 px-6 md:px-8">
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                            {/* Email Input */}
-                            <motion.div
-                                initial={{ x: -30, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
-                                className="space-y-2"
-                            >
-                                <Label htmlFor="email" className="text-sm font-semibold text-foreground">
-                                    {t("auth.email")}
-                                </Label>
-                                <div className="relative group">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="you@example.com"
-                                        className="pl-11 h-13 transition-all duration-300 focus:ring-2 focus:ring-primary/20 hover:border-primary/50"
-                                        {...register("email")}
-                                        error={errors.email?.message}
-                                    />
-                                </div>
-                            </motion.div>
-
-                            {/* Password Input */}
-                            <motion.div
-                                initial={{ x: -30, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
-                                className="space-y-2"
-                            >
-                                <Label htmlFor="password" className="text-sm font-semibold text-foreground">
-                                    {t("auth.password")}
-                                </Label>
-                                <div className="relative group">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
-                                    <Input
-                                        id="password"
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="••••••••"
-                                        className="pl-11 pr-11 h-13 transition-all duration-300 focus:ring-2 focus:ring-primary/20 hover:border-primary/50"
-                                        {...register("password")}
-                                        error={errors.password?.message}
-                                    />
-                                    <motion.button
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted/50"
-                                    >
-                                        <AnimatePresence mode="wait">
-                                            {showPassword ? (
-                                                <motion.div
-                                                    key="hide"
-                                                    initial={{ scale: 0.5, opacity: 0 }}
-                                                    animate={{ scale: 1, opacity: 1 }}
-                                                    exit={{ scale: 0.5, opacity: 0 }}
-                                                >
-                                                    <EyeOff className="w-5 h-5" />
-                                                </motion.div>
-                                            ) : (
-                                                <motion.div
-                                                    key="show"
-                                                    initial={{ scale: 0.5, opacity: 0 }}
-                                                    animate={{ scale: 1, opacity: 1 }}
-                                                    exit={{ scale: 0.5, opacity: 0 }}
-                                                >
-                                                    <Eye className="w-5 h-5" />
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </motion.button>
-                                </div>
-                            </motion.div>
-
-                            {/* Forgot Password Link */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.5 }}
-                                className="flex items-center justify-end"
-                            >
-                                <Link
-                                    href="/auth/forgot-password"
-                                    className="text-sm text-primary hover:text-primary/80 transition-colors font-medium inline-flex items-center gap-1 group"
-                                >
-                                    {t("auth.forgotPassword")}
-                                    <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                                </Link>
-                            </motion.div>
-
-                            {/* Sign In Button */}
-                            <motion.div
-                                initial={{ y: 20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-                                className="pt-2"
-                            >
-                                <Button
-                                    type="submit"
-                                    className="w-full h-13 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
-                                    disabled={loading}
-                                    loading={loading}
-                                >
-                                    {/* Shimmer effect on button */}
-                                    {!loading && (
-                                        <motion.div
-                                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                                            animate={{
-                                                x: ['-100%', '200%'],
-                                            }}
-                                            transition={{
-                                                duration: 2,
-                                                repeat: Infinity,
-                                                ease: "linear",
-                                                repeatDelay: 1
-                                            }}
-                                        />
-                                    )}
-                                    <span className="relative z-10 inline-flex items-center gap-2">
-                                        {loading ? t("common.loading") : t("auth.signIn")}
-                                        {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
-                                    </span>
-                                </Button>
-                            </motion.div>
-                        </form>
-                    </CardContent>
-
-                    <CardFooter className="flex flex-col space-y-4 pt-6 pb-8 px-6 md:px-8">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.7 }}
-                            className="text-center text-sm text-muted-foreground"
+                            className="space-y-5"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
                         >
-                            {t("auth.noAccount")}{" "}
-                            <Link
-                                href="/auth/signup"
-                                className="text-primary hover:text-primary/80 font-semibold transition-colors inline-flex items-center gap-1 group"
-                            >
-                                {t("auth.signUp")}
-                                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                            </Link>
-                        </motion.div>
-                    </CardFooter>
-                </Card>
+                            <GlassInput
+                                id="email"
+                                label={t("auth.emailOrPhone")}
+                                type="email"
+                                icon={Mail}
+                                register={register("email")}
+                                error={errors.email}
+                                placeholder="user@example.com"
+                            />
 
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.9 }}
-                    className="text-center text-xs text-muted-foreground mt-6"
-                >
-                    Secure authentication • Protected by encryption 🔒
-                </motion.p>
-            </motion.div>
+                            <div className="space-y-2">
+                                <GlassInput
+                                    id="password"
+                                    label={t("auth.password")}
+                                    type="password"
+                                    icon={Lock}
+                                    register={register("password")}
+                                    error={errors.password}
+                                    placeholder="••••••••"
+                                />
+                                <div className="flex justify-end">
+                                    <Link
+                                        href="/auth/forgot-password"
+                                        className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                                    >
+                                        {t("auth.forgotPasswordText")}
+                                    </Link>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            <Button
+                                type="submit"
+                                disabled={loading || !isValid}
+                                className={cn(
+                                    "w-full h-12 text-base font-semibold transition-all duration-300 rounded-xl",
+                                    "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5",
+                                    loading && "opacity-80 cursor-not-allowed"
+                                )}
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                ) : (
+                                    <span className="flex items-center justify-center gap-2 uppercase text-sm tracking-wide">
+                                        {t("auth.signInBtn")}
+                                    </span>
+                                )}
+                            </Button>
+                        </motion.div>
+                    </form>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="relative py-2"
+                    >
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t border-slate-700/50" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-transparent px-2 text-slate-500 backdrop-blur-sm">
+                                {t("auth.orContinueWith")}
+                            </span>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-center"
+                    >
+                        <p className="text-sm text-slate-400">
+                            {t("auth.dontHaveAccount")}{" "}
+                            <Link href="/auth/signup" className="font-semibold text-blue-400 hover:text-blue-300 transition-colors hover:underline">
+                                {t("auth.signUp")}
+                            </Link>
+                        </p>
+                    </motion.div>
+                </div>
+            </GlassCard>
         </div>
     );
 }
