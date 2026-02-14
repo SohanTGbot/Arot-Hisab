@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,19 @@ export default function SettingsPage() {
         emailNotifications: true,
         transactionReminders: true,
     });
+
+    // Load settings from localStorage on mount
+    useEffect(() => {
+        const stored = localStorage.getItem("app_settings");
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                setSettings(prev => ({ ...prev, ...parsed }));
+            } catch (e) {
+                console.error("Failed to parse settings", e);
+            }
+        }
+    }, []);
 
     const handleSave = () => {
         // Save settings to localStorage or backend

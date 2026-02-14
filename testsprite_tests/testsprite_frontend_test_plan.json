@@ -1,0 +1,3203 @@
+[
+  {
+    "id": "TC001",
+    "title": "Load authentication page successfully",
+    "description": "Verifies that the authentication (login/registration) page loads and shows core UI elements.",
+    "category": "Authentication",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/auth\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Auth\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Email\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Password\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Log in\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Login with valid credentials and reach dashboard",
+    "description": "Verifies a user can log in with valid credentials and is taken to the dashboard/protected area.",
+    "category": "Authentication",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the \"Email\" field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the \"Password\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Log in\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Dashboard\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Login fails with incorrect password",
+    "description": "Verifies an incorrect password shows a visible error message and the user stays on the auth page.",
+    "category": "Authentication",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Type \"valid.user@example.com\" into the \"Email\" field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"wrong-password\" into the \"Password\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Log in\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/auth\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Login fails with non-existent user",
+    "description": "Verifies a non-existent account cannot log in and a visible error is shown.",
+    "category": "Authentication",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Type \"no.such.user.987654@example.com\" into the \"Email\" field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"SomePassword123!\" into the \"Password\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Log in\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/auth\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Unauthorized\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Client-side validation: attempt login with empty fields",
+    "description": "Verifies the UI prevents submission or shows validation when email and password are empty.",
+    "category": "Authentication",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Log in\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/auth\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Email\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Password\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Client-side validation: invalid email format",
+    "description": "Verifies entering an invalid email format shows a visible validation error.",
+    "category": "Authentication",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Type \"not-an-email\" into the \"Email\" field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"AnyPassword123\" into the \"Password\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Log in\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/auth\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"email\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Password field can be masked",
+    "description": "Verifies the password input is masked in the UI for privacy.",
+    "category": "Authentication",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Type \"AnyPassword123\" into the \"Password\" field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Password\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Show password\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Show password\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Hide password\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Create a new transaction from the Transactions page and see it appear in the table",
+    "description": "Verifies a user can add a new transaction and the newly created row is visible in the transaction record table.",
+    "category": "Transaction Record Table",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Transactions page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Transactions\"."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Add transaction\" (or equivalent create button)."
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Seller\" with \"Test Seller A\"."
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Buyer\" with \"Test Buyer A\"."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Save\" (or equivalent submit button)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Test Seller A\" is visible in the transactions table."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Test Buyer A\" is visible in the transactions table."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Edit an existing transaction and verify updated values in the table",
+    "description": "Verifies a user can edit a transaction row and the table reflects the updated field values.",
+    "category": "Transaction Record Table",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Transactions page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"transactions table\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Edit\" action for the first transaction row."
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Notes\" with \"Updated notes for edit test\"."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Save\" (or equivalent update button)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Updated notes for edit test\" is visible in the transactions table."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Delete an existing transaction and verify it is removed from the table",
+    "description": "Verifies a user can delete a transaction and the corresponding row is no longer visible in the table.",
+    "category": "Transaction Record Table",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Transactions page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"transactions table\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on the first transaction row to focus it (or open its row actions)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Delete\" is visible for the selected row."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Delete\" for the selected row."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Confirm\" in the delete confirmation."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Transaction deleted\" (or equivalent success message) is visible."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Validation: prevent saving a transaction with missing required fields",
+    "description": "Verifies required-field validation is shown when trying to save an incomplete transaction.",
+    "category": "Transaction Record Table",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Transactions page."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Add transaction\" (or equivalent create button)."
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Seller\" with \"\" (leave empty)."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Save\" (or equivalent submit button)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Seller is required\" (or equivalent required field message) is visible."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"transaction form\" is visible."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Switch language to Bengali from Settings and see Bengali UI on Dashboard",
+    "description": "Verifies a logged-in user can switch to Bengali and the Dashboard UI updates to Bengali text.",
+    "category": "Bilingual Interface (Bengali/English)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation/menu"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Bengali\" from the language dropdown (or click the Bengali language option)"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Language preference persists after refresh on Dashboard",
+    "description": "Verifies the selected language remains Bengali after a page refresh during the same session.",
+    "category": "Bilingual Interface (Bengali/English)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation/menu"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Bengali\" from the language dropdown (or click the Bengali language option)"
+      },
+      {
+        "type": "action",
+        "description": "Press \"Enter\" to trigger any save/apply action if the UI requires confirmation"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Switch language back to English from Settings and see English UI on Dashboard",
+    "description": "Verifies a logged-in user can switch back to English and the Dashboard UI updates accordingly.",
+    "category": "Bilingual Interface (Bengali/English)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation/menu"
+      },
+      {
+        "type": "action",
+        "description": "Select \"English\" from the language dropdown (or click the English language option)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Language\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Unsupported language selection is rejected and language remains unchanged",
+    "description": "Verifies the UI prevents or rejects an unsupported language and keeps the previously selected language.",
+    "category": "Bilingual Interface (Bengali/English)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation/menu"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to select \"French\" (fr) from the language dropdown, if available"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"unsupported language\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Unsupported language attempt does not change the displayed language on Settings",
+    "description": "Verifies that after an unsupported language attempt, the Settings page still shows the previous language selection.",
+    "category": "Bilingual Interface (Bengali/English)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation/menu"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to select \"French\" (fr) from the language dropdown, if available"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Language\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Bengali translation appears for at least one common UI label on Dashboard",
+    "description": "Verifies that after switching to Bengali, at least one standard label on Dashboard is displayed in Bengali script.",
+    "category": "Bilingual Interface (Bengali/English)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation/menu"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Bengali\" from the language dropdown (or click the Bengali language option)"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Dashboard\" in the main navigation/menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"ড্যাশবোর্ড\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "English translation appears for at least one common UI label after switching to English",
+    "description": "Verifies that after switching to English, the UI shows English labels again.",
+    "category": "Bilingual Interface (Bengali/English)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation/menu"
+      },
+      {
+        "type": "action",
+        "description": "Select \"English\" from the language dropdown (or click the English language option)"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Dashboard\" in the main navigation/menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Dashboard\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Change font size to Large and see it applied on Profile",
+    "description": "Verifies a signed-in user can set font size to Large and the Profile UI reflects the larger font size.",
+    "category": "Adjustable Font Size",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Profile\" is visible in the main navigation or user menu"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Profile\" is visible on the page"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Large\" from the font size setting dropdown"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Font size change persists after page refresh (Large)",
+    "description": "Verifies the selected font size persists on refresh, indicating the preference is stored and re-applied.",
+    "category": "Adjustable Font Size",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "action",
+        "description": "Select \"Large\" from the font size setting dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Wait for text \"Font size\" to be visible"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Switch from Large to Small and see UI update",
+    "description": "Verifies the user can change font size from Large to Small and the UI reflects the smaller text styling.",
+    "category": "Adjustable Font Size",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "action",
+        "description": "Select \"Large\" from the font size setting dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Small\" from the font size setting dropdown"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Small\" is visible as the selected font size value"
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Cancel/close font size control without changing selection",
+    "description": "Verifies closing the settings area without selecting a new size leaves the current selection unchanged.",
+    "category": "Adjustable Font Size",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Font size\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Press \"Escape\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Font size\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "Invalid font size value is rejected and previous setting remains",
+    "description": "Verifies invalid font size input is not accepted and the previously selected font size stays applied.",
+    "category": "Adjustable Font Size",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "action",
+        "description": "Select \"Medium\" from the font size setting dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click into the font size input (if editable) and type \"xxl\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC024",
+    "title": "After invalid font size attempt, Profile still shows previous selection",
+    "description": "Verifies that after an invalid attempt, navigating away and returning keeps the last valid font size selection.",
+    "category": "Adjustable Font Size",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "action",
+        "description": "Select \"Medium\" from the font size setting dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click into the font size input (if editable) and type \"xxl\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      }
+    ]
+  },
+  {
+    "id": "TC025",
+    "title": "Font size setting remains when returning to Profile from another area",
+    "description": "Verifies the chosen font size remains consistent when navigating within the app and coming back to Profile.",
+    "category": "Adjustable Font Size",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "action",
+        "description": "Select \"Large\" from the font size setting dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Home\" in the main navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      }
+    ]
+  },
+  {
+    "id": "TC026",
+    "title": "Large font size does not break key Profile text visibility",
+    "description": "Verifies key Profile content remains visible and readable after setting font size to Large.",
+    "category": "Adjustable Font Size",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username or email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Profile\""
+      },
+      {
+        "type": "action",
+        "description": "Select \"Large\" from the font size setting dropdown"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Profile\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Font size\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC027",
+    "title": "Use on-screen keypad to enter a simple addition and view the computed result",
+    "description": "Verifies the built-in calculator keypad can input a basic expression and display the correct result.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the calculator screen from the application’s main entry page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Calculator\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"1\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"+\" on the on-screen keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"2\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"=\" on the calculator."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"3\" is visible."
+      }
+    ]
+  },
+  {
+    "id": "TC028",
+    "title": "Keypad supports decimals and multiplication with a correct formatted result",
+    "description": "Verifies decimal entry and multiplication compute correctly and render a reasonable numeric output.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the calculator screen from the application’s main entry page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Calculator\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"7\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \".\" on the on-screen keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"5\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"×\" on the on-screen keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"2\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"=\" is visible."
+      }
+    ]
+  },
+  {
+    "id": "TC029",
+    "title": "Clear resets the current expression and result display",
+    "description": "Verifies the clear action removes previously entered input and resets the display state.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the calculator screen from the application’s main entry page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Calculator\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"9\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"C\" (Clear) on the calculator."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"9\" is not visible."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"0\" is visible."
+      }
+    ]
+  },
+  {
+    "id": "TC030",
+    "title": "Backspace deletes the last entered character",
+    "description": "Verifies the calculator can remove the last digit/operator using backspace/delete control.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the calculator screen from the application’s main entry page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Calculator\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"1\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"2\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"⌫\" (Backspace/Delete) on the calculator."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"1\" is visible."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"12\" is not visible."
+      }
+    ]
+  },
+  {
+    "id": "TC031",
+    "title": "Malformed expression entry is blocked or shows a visible error state",
+    "description": "Verifies the UI prevents or clearly errors on malformed numeric expressions such as repeated decimals.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the calculator screen from the application’s main entry page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Calculator\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"1\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"5\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \".\" on the on-screen keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \".\" on the on-screen keypad."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Error\" is visible."
+      }
+    ]
+  },
+  {
+    "id": "TC032",
+    "title": "Expression evaluator computes a complex market-style expression via the UI (if available)",
+    "description": "Verifies a complex expression can be entered and evaluated end-to-end from the UI and a numeric result is displayed.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the calculator screen from the application’s main entry page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Calculator\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Type \"15.700 * 0.95 * 120 * 1.02\" into the calculator expression input field."
+      },
+      {
+        "type": "action",
+        "description": "Press Enter."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"1825\" is visible."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"1825.6\" is visible."
+      }
+    ]
+  },
+  {
+    "id": "TC033",
+    "title": "Calculator result can be sent into a transaction input field (feed into form)",
+    "description": "Verifies the calculator output can be applied to a transaction-related input field from the UI.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a screen that contains both a transaction input field and access to the built-in calculator."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Calculator\" is visible."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"2\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"0\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"=\" on the calculator."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Use\" / \"Apply\" (the control that inserts the calculator result into the transaction input)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"20\" is visible in the target transaction input field."
+      }
+    ]
+  },
+  {
+    "id": "TC034",
+    "title": "Cancel/close calculator does not overwrite an existing transaction input value",
+    "description": "Verifies dismissing the calculator leaves the current transaction field unchanged unless explicitly applied.",
+    "category": "Built-in Calculator (numeric keypad / expression evaluator)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a screen that contains a transaction input field and access to the built-in calculator."
+      },
+      {
+        "type": "action",
+        "description": "Type \"999\" into the transaction input field."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"999\" is visible in the transaction input field."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Calculator\" to open the calculator panel/modal."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"1\" on the on-screen numeric keypad."
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Close\" / \"Cancel\" to dismiss the calculator without applying."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"999\" is visible in the transaction input field."
+      }
+    ]
+  },
+  {
+    "id": "TC035",
+    "title": "Deduction method setting shows selectable options in UI",
+    "description": "Verifies the user can see and choose between Method A and Method B in the settings UI.",
+    "category": "Deduction Method Selection",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Deduction Method\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Method A\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC036",
+    "title": "Select Method B and confirm it is saved and shown as selected",
+    "description": "Verifies selecting Method B persists in UI and is reflected as the current selection.",
+    "category": "Deduction Method Selection",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Method B\" from the \"Deduction Method\" options"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Method B\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC037",
+    "title": "Select Method A and confirm it is saved and shown as selected",
+    "description": "Verifies selecting Method A persists in UI and is reflected as the current selection.",
+    "category": "Deduction Method Selection",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Method A\" from the \"Deduction Method\" options"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Method A\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC038",
+    "title": "Method B affects net weight calculation in a new transaction preview",
+    "description": "Verifies that with Method B selected, the transaction calculation/preview reflects Method B logic before saving.",
+    "category": "Deduction Method Selection",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Method B\" from the \"Deduction Method\" options"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"New Transaction\" in the main navigation"
+      }
+    ]
+  },
+  {
+    "id": "TC039",
+    "title": "Method A affects net weight calculation in a new transaction preview",
+    "description": "Verifies that with Method A selected, the transaction calculation/preview reflects Method A logic before saving.",
+    "category": "Deduction Method Selection",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Method A\" from the \"Deduction Method\" options"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"New Transaction\" in the main navigation"
+      }
+    ]
+  },
+  {
+    "id": "TC040",
+    "title": "Invalid deduction method value is rejected by UI validation",
+    "description": "Verifies the UI prevents or rejects a deduction method value outside Method A/Method B.",
+    "category": "Deduction Method Selection",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Deduction Method\" selector control"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Method A\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC041",
+    "title": "Deduction method selection remains after page reload within the session",
+    "description": "Verifies the currently selected deduction method is still shown after reloading the page.",
+    "category": "Deduction Method Selection",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Settings\" in the main navigation"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Method B\" from the \"Deduction Method\" options"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Log in\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC042",
+    "title": "Daily Summary Report page opens and shows date filter",
+    "description": "Verifies the Daily Summary Report UI is accessible and displays core report controls for selecting a date.",
+    "category": "Daily Summary Report",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Daily Summary Report page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Daily Summary\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Date\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Generate\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Export\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC043",
+    "title": "Generate daily summary for a valid date shows totals",
+    "description": "Verifies generating the report for a valid date renders all expected total fields and values on screen.",
+    "category": "Daily Summary Report",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Daily Summary Report page"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"2026-02-14\" into the \"Date\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Generate\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Total transactions\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Total gross weight\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Total net weight\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Total base amount\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Total commission\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC044",
+    "title": "Generated report shows non-empty numeric totals for a valid date",
+    "description": "Verifies totals render as visible numbers (not placeholders/blank) after generating a valid date report.",
+    "category": "Daily Summary Report",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Daily Summary Report page"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"2026-02-14\" into the \"Date\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Generate\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Total transactions value\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Total gross weight value\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Total net weight value\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Total base amount value\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Total commission value\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC045",
+    "title": "Generate daily summary for a date with no data shows a not-found message",
+    "description": "Verifies the UI handles a date with no summary by showing a clear \"no summary found\" state.",
+    "category": "Daily Summary Report",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Daily Summary Report page"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"1990-01-01\" into the \"Date\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Generate\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No summary found\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Export\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC046",
+    "title": "Switching date updates the rendered totals",
+    "description": "Verifies changing the selected date and re-generating refreshes the displayed totals accordingly.",
+    "category": "Daily Summary Report",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Daily Summary Report page"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"2026-02-14\" into the \"Date\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Generate\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"1990-01-01\" into the \"Date\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Generate\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No summary found\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC047",
+    "title": "View saved contacts list after login",
+    "description": "Verifies that an authenticated user can open the saved sellers/buyers area and see a list of saved contacts.",
+    "category": "User Profiles (saved sellers/buyers)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Contacts\" or \"Saved Profiles\" navigation item"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Sellers\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Buyers\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC048",
+    "title": "Add a new seller contact successfully",
+    "description": "Verifies that a user can add a new seller contact and see it appear in the saved contacts list.",
+    "category": "User Profiles (saved sellers/buyers)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Contacts\" or \"Saved Profiles\" navigation item"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Add Contact\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Badal Babu\" into the \"Name\" field"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Seller\" from the \"Contact type\" dropdown"
+      }
+    ]
+  },
+  {
+    "id": "TC049",
+    "title": "Confirm newly created seller contact is visible in list",
+    "description": "Verifies that after saving a new seller contact, it is visible in the contacts list view.",
+    "category": "User Profiles (saved sellers/buyers)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Contacts\" or \"Saved Profiles\" navigation item"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Add Contact\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Badal Babu\" into the \"Name\" field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Badal Babu\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC050",
+    "title": "Add a new buyer contact successfully",
+    "description": "Verifies that a user can add a buyer contact and see buyer type reflected in the UI.",
+    "category": "User Profiles (saved sellers/buyers)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Contacts\" or \"Saved Profiles\" navigation item"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Add Contact\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Rahim Buyer\" into the \"Name\" field"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Buyer\" from the \"Contact type\" dropdown"
+      }
+    ]
+  },
+  {
+    "id": "TC051",
+    "title": "Form validation: cannot save contact with empty name",
+    "description": "Verifies that the contact creation form validates required fields and shows an error for missing name.",
+    "category": "User Profiles (saved sellers/buyers)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Contacts\" or \"Saved Profiles\" navigation item"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Add Contact\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Name is required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC052",
+    "title": "Cancel add-contact keeps list unchanged",
+    "description": "Verifies that cancelling out of the add contact flow returns to the list without creating a new entry.",
+    "category": "User Profiles (saved sellers/buyers)",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Contacts\" or \"Saved Profiles\" navigation item"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Add Contact\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Temporary Contact\" into the \"Name\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Cancel\" button"
+      }
+    ]
+  },
+  {
+    "id": "TC053",
+    "title": "Choose ‘Keep local’ during conflict resolution and verify resolution success message",
+    "description": "Verifies selecting the local version in conflict resolution completes and shows a clear outcome.",
+    "category": "Offline Mode & Sync",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to \"/login\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Wait for text \"Sync conflict\" to appear"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Keep local\" option"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Confirm\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Conflict resolved\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"All changes synced\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC054",
+    "title": "Choose ‘Keep server’ during conflict resolution and verify local UI updates accordingly",
+    "description": "Verifies selecting the server version resolves the conflict and updates the visible transaction details.",
+    "category": "Offline Mode & Sync",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to \"/login\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Wait for text \"Sync conflict\" to appear"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Keep server\" option"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Confirm\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Conflict resolved\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"All changes synced\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC055",
+    "title": "Dashboard loads successfully for an authenticated user",
+    "description": "Verifies that an authenticated user can reach the dashboard and sees key dashboard content.",
+    "category": "Dashboard Page (UI entry point)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Dashboard\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC056",
+    "title": "Dashboard shows calculation UI entry point after login",
+    "description": "Verifies that the dashboard exposes the primary calculation UI area for quick use.",
+    "category": "Dashboard Page (UI entry point)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Calculation\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC057",
+    "title": "Dashboard displays recent transactions section",
+    "description": "Verifies that the dashboard includes a visible section for recent transactions.",
+    "category": "Dashboard Page (UI entry point)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Recent Transactions\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC058",
+    "title": "Recent transactions list renders at least the table/list container",
+    "description": "Verifies that the recent transactions UI renders a visible container (table or list) for records.",
+    "category": "Dashboard Page (UI entry point)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Recent transactions table or list\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC059",
+    "title": "Dashboard provides quick actions entry point",
+    "description": "Verifies that the dashboard exposes quick actions for common tasks.",
+    "category": "Dashboard Page (UI entry point)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Quick Actions\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC060",
+    "title": "Dashboard loads without visible error banner/toast for authenticated user",
+    "description": "Verifies that the dashboard does not show a generic visible error state when the user is authenticated.",
+    "category": "Dashboard Page (UI entry point)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Error\" is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC061",
+    "title": "Invalid login prevents reaching the dashboard",
+    "description": "Verifies that a user with incorrect credentials cannot access the dashboard and sees a visible login error.",
+    "category": "Dashboard Page (UI entry point)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"not-a-real-user@example.com\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"wrong-password\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/login\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC062",
+    "title": "Authenticated user can open Transactions page and see the transaction table",
+    "description": "Verifies the Transactions page loads for a logged-in user and displays a visible transaction table area.",
+    "category": "Transactions Page (page-level)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/transactions\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Transactions\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Transactions table\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC063",
+    "title": "Transactions page shows expected table structure when data is present",
+    "description": "Verifies the transaction list area renders with recognizable table columns/headers and at least one row when data exists.",
+    "category": "Transactions Page (page-level)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/transactions\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Transactions table header\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"A transaction row\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC064",
+    "title": "Edit action is available for a transaction row",
+    "description": "Verifies each transaction row exposes an Edit action and opening it shows an edit UI (modal or edit page).",
+    "category": "Transactions Page (page-level)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/transactions\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Edit\" action for the first visible transaction row"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Edit\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Save\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC065",
+    "title": "Canceling an edit returns to the transactions table without changes",
+    "description": "Verifies the user can back out of editing via Cancel/Close and returns to the transactions table view.",
+    "category": "Transactions Page (page-level)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Edit\" action for the first visible transaction row"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Cancel\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Cancel\" (or \"Close\") control"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/transactions\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Transactions table\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC066",
+    "title": "Delete action prompts for confirmation before removing a transaction",
+    "description": "Verifies clicking Delete initiates a visible confirmation step rather than immediately removing the row.",
+    "category": "Transactions Page (page-level)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/transactions\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Delete\" action for the first visible transaction row"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Delete\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Are you sure\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC067",
+    "title": "Canceling delete keeps the transaction row visible",
+    "description": "Verifies that choosing Cancel/No on the delete confirmation does not remove the transaction from the table.",
+    "category": "Transactions Page (page-level)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Delete\" action for the first visible transaction row"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Cancel\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Cancel\" (or \"No\") button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Transactions table\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"A transaction row\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC068",
+    "title": "Export action is available from the Transactions page",
+    "description": "Verifies an Export action is visible and triggers an on-page export UI (menu or dialog) without relying on file download verification.",
+    "category": "Transactions Page (page-level)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/transactions\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Export\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Export\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Export options\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC069",
+    "title": "Transactions page handles empty state gracefully",
+    "description": "Verifies that when no transactions exist, an informative empty-state message is shown instead of a broken table.",
+    "category": "Transactions Page (page-level)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/transactions\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Transactions table\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No transactions\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Create\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC070",
+    "title": "Update settings successfully (language, font size, deduction method)",
+    "description": "Verifies an authenticated user can open Settings, change preferences, save, and see the updated values reflected in the UI.",
+    "category": "Settings Page",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Select \"English\" from the language dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Medium\" from the font size dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Select \"A\" from the deduction method dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings saved\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC071",
+    "title": "Settings page reflects previously saved preferences after reload",
+    "description": "Verifies that saved settings persist and are displayed when revisiting the Settings page in the same authenticated session.",
+    "category": "Settings Page",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings saved\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC072",
+    "title": "Switch language to English updates visible UI text on Settings page",
+    "description": "Verifies that changing the language preference updates visible labels on the Settings page after saving.",
+    "category": "Settings Page",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Select \"English\" from the language dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC073",
+    "title": "Change font size to Medium reflects in Settings UI preview/indicator",
+    "description": "Verifies that selecting a font size setting results in a visible confirmation (e.g., selected value shown) after saving.",
+    "category": "Settings Page",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Medium\" from the font size dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Medium\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC074",
+    "title": "Change deduction method to A persists as selected option",
+    "description": "Verifies that the deduction default method can be changed to A and remains selected after saving.",
+    "category": "Settings Page",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Select \"A\" from the deduction method dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"A\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC075",
+    "title": "Cancel/leave Settings without saving does not show saved confirmation",
+    "description": "Verifies that changing values without saving does not show a success message, reducing false confirmation risk.",
+    "category": "Settings Page",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Select \"English\" from the language dropdown"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings saved\" is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC076",
+    "title": "View Profile page shows existing user details",
+    "description": "Verifies an authenticated user can open the Profile page and see key profile fields populated.",
+    "category": "Profile Page",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/profile\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Profile\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Full name\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Phone\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC077",
+    "title": "Update full name and phone successfully from Profile page",
+    "description": "Verifies a user can edit profile fields and sees a visible success confirmation.",
+    "category": "Profile Page",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/profile\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"New Name\" into the \"Full name\" field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"+911234567890\" into the \"Phone\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Update profile\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Profile updated\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC078",
+    "title": "Invalid phone format shows validation error and blocks saving",
+    "description": "Verifies entering an invalid phone number displays a visible validation error and does not show success.",
+    "category": "Profile Page",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/profile\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"123\" into the \"Phone\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Update profile\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid phone\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC079",
+    "title": "Phone validation error clears after correcting the phone number",
+    "description": "Verifies the phone field error is resolved when the user corrects the phone number and saves successfully.",
+    "category": "Profile Page",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/profile\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"123\" into the \"Phone\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Update profile\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid phone\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"+911234567890\" into the \"Phone\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Update profile\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Profile updated\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC080",
+    "title": "Updated profile details persist after page reload",
+    "description": "Verifies that after saving, the updated values remain visible when the Profile page is revisited.",
+    "category": "Profile Page",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/profile\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"New Name\" into the \"Full name\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Update profile\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Profile updated\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /profile"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"New Name\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC081",
+    "title": "Saving with empty full name shows required-field error",
+    "description": "Verifies the Profile page prevents saving when the full name is cleared and shows a visible error.",
+    "category": "Profile Page",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/profile\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"\" into the \"Full name\" field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" or \"Update profile\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Full name is required\" is visible"
+      }
+    ]
+  }
+]

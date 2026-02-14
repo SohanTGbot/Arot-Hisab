@@ -1,0 +1,64 @@
+version: "2"
+type: frontend
+tech_stack:
+  - TypeScript
+  - Next.js
+  - Tailwind CSS
+  - Supabase
+features:
+  - name: Authentication
+    description: User login and registration
+    files:
+      - src/app/auth/page.tsx
+    endpoints:
+      - method: GET
+        path: /auth
+        description: Authentication page
+        auth_required: false
+        response_schema:
+          "200": HTML
+  - name: Dashboard
+    description: User dashboard overview
+    files:
+      - src/app/dashboard/page.tsx
+    endpoints:
+      - method: GET
+        path: /dashboard
+        description: Dashboard page
+        auth_required: true
+        response_schema:
+          "200": HTML
+  - name: Transactions
+    description: Manage transactions
+    files:
+      - src/app/transactions/page.tsx
+    endpoints:
+      - method: GET
+        path: /transactions
+        description: Transactions page
+        auth_required: true
+        response_schema:
+          "200": HTML
+  - name: User Settings
+    description: Manage user settings
+    files:
+      - src/app/settings/page.tsx
+    endpoints:
+      - method: GET
+        path: /settings
+        description: Settings page
+        auth_required: true
+        response_schema:
+          "200": HTML
+  - name: User Profile
+    description: Manage user profile
+    files:
+      - src/app/profile/page.tsx
+    endpoints:
+      - method: GET
+        path: /profile
+        description: Profile page
+        auth_required: true
+        response_schema:
+          "200": HTML
+known_limitations: []

@@ -24,7 +24,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         // Initialize language from i18n
         const currentLang = i18nInstance.language as Language;
-        setLanguageState(currentLang);
+        if (currentLang && currentLang !== language) {
+            setLanguageState(currentLang);
+        }
 
         // Initialize Bengali numerals preference from localStorage
         const savedNumeralPref = localStorage.getItem('useBengaliNumerals');

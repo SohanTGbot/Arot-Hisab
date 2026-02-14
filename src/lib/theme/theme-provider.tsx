@@ -26,7 +26,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         if (stored) {
             try {
                 const parsed = JSON.parse(stored) as Theme;
-                setTheme(parsed);
+                // Only update if different from default
+                if (parsed.color !== 'default' || parsed.mode !== 'light') {
+                    setTheme(parsed);
+                }
             } catch (e) {
                 console.error('Failed to parse theme from localStorage', e);
             }
