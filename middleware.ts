@@ -18,7 +18,10 @@ export async function middleware(request: NextRequest) {
         return await updateSession(request);
     } catch (e) {
         console.error("Middleware Error:", e);
-        return new NextResponse('Internal Server Error', { status: 500 });
+        return new NextResponse(
+            `Internal Server Error: ${e instanceof Error ? e.message : String(e)}`,
+            { status: 500 }
+        );
     }
 }
 
