@@ -16,6 +16,25 @@ const GlassInput = React.forwardRef<HTMLInputElement, GlassInputProps>(
         const isPassword = type === "password";
         const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
+        // Handle ref merging
+        const { ref: registerRef, ...registerProps } = register || {};
+
+        const combinedRef = (node: HTMLInputElement) => {
+            // Handle register ref
+            if (typeof registerRef === 'function') {
+                registerRef(node);
+            } else if (registerRef) {
+                registerRef.current = node;
+            }
+
+            // Handle forwarded ref
+            if (typeof ref === 'function') {
+                ref(node);
+            } else if (ref) {
+                (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
+            }
+        };
+
         return (
             <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300 ml-1">
@@ -28,10 +47,10 @@ const GlassInput = React.forwardRef<HTMLInputElement, GlassInputProps>(
                         </div>
                     )}
                     <input
-                        {...register}
+                        {...registerProps}
                         {...props}
                         type={inputType}
-                        ref={ref}
+                        ref={combinedRef}
                         className={cn(
                             "w-full bg-slate-900/40 border border-white/5 rounded-xl px-4 py-3.5 text-slate-100 placeholder:text-slate-600",
                             "transition-all duration-300",

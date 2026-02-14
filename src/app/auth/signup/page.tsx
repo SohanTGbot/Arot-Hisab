@@ -13,8 +13,9 @@ import { signUpWithEmail } from "@/lib/actions/auth";
 import { motion } from "framer-motion";
 import { Loader2, Check, User, Mail, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { GlassInput } from "@/components/ui/glass-input";
-import { GlassCard } from "@/components/ui/glass-card";
+import { PremiumInput } from "@/components/ui/premium-input";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
@@ -74,26 +75,29 @@ export default function SignUpPage() {
     };
 
     return (
-        <div className="w-full max-w-md mx-auto">
-            <GlassCard>
+        <div className="w-full max-w-md mx-auto relative z-10">
+            <SpotlightCard className="p-8 border-white/5 bg-slate-900/40 backdrop-blur-md">
                 <div className="space-y-8">
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-center space-y-2"
+                        className="text-center space-y-4"
                     >
-                        <div className="flex justify-center mb-6">
-                            <div className="w-12 h-12 bg-gradient-to-tr from-blue-600 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 text-white font-bold text-xl">
-                                A
+                        <div className="flex justify-center mb-4">
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-cyan-500/20 blur-xl animate-pulse-slow rounded-full" />
+                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-blue-500/10 shadow-[0_0_25px_rgba(6,182,212,0.2)] group border border-white/10 relative z-10 backdrop-blur-sm">
+                                    <span className="text-2xl font-black text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">A</span>
+                                </div>
                             </div>
                         </div>
-                        <h2 className="text-3xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
-                            {t("auth.getStarted")}
-                        </h2>
-                        <p className="text-slate-400 text-sm">
-                            {t("auth.subheader")}
-                        </p>
+                        <div className="space-y-2">
+                            <TextGenerateEffect words={t("auth.getStarted")} className="text-3xl lg:text-4xl font-bold tracking-tight text-white mb-2" />
+                            <p className="text-slate-400 text-sm">
+                                {t("auth.subheader")}
+                            </p>
+                        </div>
                     </motion.div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -103,7 +107,7 @@ export default function SignUpPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
                         >
-                            <GlassInput
+                            <PremiumInput
                                 id="fullName"
                                 label={t("auth.fullName")}
                                 icon={User}
@@ -112,7 +116,7 @@ export default function SignUpPage() {
                                 placeholder="John Doe"
                             />
 
-                            <GlassInput
+                            <PremiumInput
                                 id="email"
                                 label={t("auth.email")}
                                 type="email"
@@ -123,7 +127,7 @@ export default function SignUpPage() {
                             />
 
                             <div className="space-y-4">
-                                <GlassInput
+                                <PremiumInput
                                     id="password"
                                     label={t("auth.password")}
                                     type="password"
@@ -133,15 +137,25 @@ export default function SignUpPage() {
                                     placeholder="••••••••"
                                 />
 
+                                <PremiumInput
+                                    id="confirmPassword"
+                                    label={t("auth.confirmPassword")}
+                                    type="password"
+                                    icon={Lock}
+                                    register={register("confirmPassword")}
+                                    error={errors.confirmPassword}
+                                    placeholder="••••••••"
+                                />
+
                                 {/* Password Strength Meter */}
                                 <div className="space-y-2">
-                                    <div className="h-1 w-full bg-slate-800/50 rounded-full overflow-hidden">
+                                    <div className="h-1.5 w-full bg-slate-800/50 rounded-full overflow-hidden border border-white/5">
                                         <motion.div
                                             className={cn(
-                                                "h-full transition-all duration-300",
-                                                strength <= 25 ? "bg-red-500" :
-                                                    strength <= 50 ? "bg-orange-500" :
-                                                        strength <= 75 ? "bg-yellow-500" : "bg-green-500"
+                                                "h-full transition-all duration-500 shadow-[0_0_10px_currentColor]",
+                                                strength <= 25 ? "bg-red-500 text-red-500" :
+                                                    strength <= 50 ? "bg-orange-500 text-orange-500" :
+                                                        strength <= 75 ? "bg-yellow-500 text-yellow-500" : "bg-cyan-500 text-cyan-500"
                                             )}
                                             initial={{ width: 0 }}
                                             animate={{ width: `${strength}%` }}
@@ -151,13 +165,13 @@ export default function SignUpPage() {
                                         {requirements.map((req, i) => (
                                             <div key={i} className="flex items-center gap-1 text-[10px] sm:text-xs">
                                                 {req.re.test(password || "") ? (
-                                                    <Check className="w-3 h-3 text-green-500" />
+                                                    <Check className="w-3 h-3 text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" />
                                                 ) : (
                                                     <div className="w-3 h-3 rounded-full border border-slate-700" />
                                                 )}
                                                 <span className={cn(
-                                                    "transition-colors",
-                                                    req.re.test(password || "") ? "text-green-400 font-medium" : "text-slate-500"
+                                                    "transition-colors duration-300",
+                                                    req.re.test(password || "") ? "text-cyan-400 font-medium shadow-cyan-500/50" : "text-slate-500"
                                                 )}>
                                                     {req.label}
                                                 </span>
@@ -172,16 +186,16 @@ export default function SignUpPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3 }}
-                            className="flex items-start space-x-3"
+                            className="flex items-start space-x-3 group cursor-pointer"
                         >
                             <div className="flex items-center h-5">
                                 <input
                                     id="terms"
                                     type="checkbox"
-                                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-900"
+                                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900 accent-cyan-500 transition-all group-hover:border-cyan-500"
                                 />
                             </div>
-                            <label htmlFor="terms" className="text-xs text-slate-400 leading-tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            <label htmlFor="terms" className="text-xs text-slate-400 leading-tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70 group-hover:text-slate-300 transition-colors">
                                 {t("auth.termsText")}
                             </label>
                         </motion.div>
@@ -195,15 +209,16 @@ export default function SignUpPage() {
                                 type="submit"
                                 disabled={loading || !isValid}
                                 className={cn(
-                                    "w-full h-12 text-base font-semibold transition-all duration-300 rounded-xl",
-                                    "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5",
+                                    "w-full h-14 text-lg font-bold transition-all duration-300 rounded-xl",
+                                    "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] hover:-translate-y-1 border border-white/10 relative overflow-hidden group",
                                     loading && "opacity-80 cursor-not-allowed"
                                 )}
                             >
+                                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12" />
                                 {loading ? (
-                                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                    <Loader2 className="w-6 h-6 animate-spin mr-2" />
                                 ) : (
-                                    <span className="flex items-center justify-center gap-2">
+                                    <span className="flex items-center justify-center gap-2 relative z-10">
                                         {t("auth.createAccountBtn")}
                                     </span>
                                 )}
@@ -219,13 +234,13 @@ export default function SignUpPage() {
                     >
                         <p className="text-sm text-slate-400">
                             {t("auth.alreadyHaveAccount")}{" "}
-                            <Link href="/auth/signin" className="font-semibold text-blue-400 hover:text-blue-300 transition-colors hover:underline">
+                            <Link href="/auth/signin" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors hover:underline">
                                 {t("auth.signIn")}
                             </Link>
                         </p>
                     </motion.div>
                 </div>
-            </GlassCard>
+            </SpotlightCard>
         </div>
     );
 }

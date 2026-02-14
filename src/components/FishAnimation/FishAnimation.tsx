@@ -2,196 +2,371 @@
 
 import React, { useRef, useEffect } from "react";
 
+// --- Types ---
 interface Point {
     x: number;
     y: number;
 }
 
-class Fish {
+interface Vector {
     x: number;
     y: number;
-    vx: number;
-    vy: number;
-    ax: number;
-    ay: number;
-    size: number;
-    speed: number;
-    color: string;
-    canvasWidth: number;
-    canvasHeight: number;
-    angle: number;
-    tailO: number; // Tail oscillation offset
+}
 
-    constructor(w: number, h: number) {
-        this.canvasWidth = w;
-        this.canvasHeight = h;
-        this.x = Math.random() * w;
-        this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 2;
-        this.vy = (Math.random() - 0.5) * 2;
-        this.ax = 0;
-        this.ay = 0;
-        this.size = Math.random() * 3 + 3; // 3-6
-        this.speed = Math.random() * 1.5 + 2; // 2-3.5
-        // Electric/Neon colors for premium feel
-        const colors = ["#22d3ee", "#60a5fa", "#a78bfa", "#2dd4bf", "#f472b6"];
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-        this.angle = 0;
-        this.tailO = Math.random() * Math.PI * 2;
+// --- Configuration ---
+const CONFIG = {
+    fishCount: 15, // Fewer fish, but higher quality
+    fishSize: 1.5, // Global scale multiplier
+    segmentCount: 12, // Number of spine segments
+    segmentLength: 5,
+    finSpeed: 0.15, // Fin oscillation speed
+};
+
+// --- Helper Functions ---
+const dist = (p1: Point, p2: Point) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
+const angle = (p1: Point, p2: Point) => Math.atan2(p2.y - p1.y, p2.x - p1.x);
+
+// --- Classes ---
+
+class Spine {
+    joints: Point[];
+    angles: number[];
+    length: number;
+
+    constructor(x: number, y: number, count: number, length: number) {
+        this.joints = Array(count).fill(0).map(() => ({ x, y }));
+        this.angles = Array(count).fill(0);
+        this.length = length;
     }
 
-    update(fishArray: Fish[], target: Point | null, isTouching: boolean) {
-        // Flocking Forces
-        const separationRange = 30; // Personal space
-        const alignRange = 60;
-        const cohesionRange = 60;
+    update(headX: number, headY: number) {
+        // Head follows the physics position
+        this.joints[0].x = headX;
+        this.joints[0].y = headY;
 
-        let sepX = 0, sepY = 0, sepCount = 0;
-        let alignX = 0, alignY = 0, alignCount = 0;
-        let cohX = 0, cohY = 0, cohCount = 0;
+        // Inverse Kinematics (Chain)
+        for (let i = 1; i < this.joints.length; i++) {
+            const cur = this.joints[i];
+            const prev = this.joints[i - 1];
 
-        fishArray.forEach((other) => {
-            const dx = other.x - this.x;
-            const dy = other.y - this.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const a = angle(cur, prev);
+            this.angles[i] = a;
 
-            if (other !== this && dist < separationRange) {
-                sepX += (this.x - other.x) / dist;
-                sepY += (this.y - other.y) / dist;
-                sepCount++;
-            }
-            if (other !== this && dist < alignRange) {
-                alignX += other.vx;
-                alignY += other.vy;
-                alignCount++;
-            }
-            if (other !== this && dist < cohesionRange) {
-                cohX += other.x;
-                cohY += other.y;
-                cohCount++;
-            }
-        });
-
-        if (sepCount > 0) { sepX /= sepCount; sepY /= sepCount; }
-        if (alignCount > 0) { alignX /= alignCount; alignY /= alignCount; }
-        if (cohCount > 0) {
-            cohX = (cohX / cohCount - this.x);
-            cohY = (cohY / cohCount - this.y);
+            // Maintain fixed distance constraint (Segment Length)
+            // Move current towards previous until distance is 'length'
+            // Simple approach: Set position based on angle from previous
+            cur.x = prev.x - Math.cos(a) * this.length;
+            cur.y = prev.y - Math.sin(a) * this.length;
         }
-
-        // Target Interaction (Mouse or Touch)
-        let targetX = 0, targetY = 0;
-        if (target) {
-            const dx = target.x - this.x;
-            const dy = target.y - this.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            // Interaction Radius
-            const radius = isTouching ? 300 : 250;
-
-            if (dist < radius) {
-                // ATTRACTION force (Follow cursor/touch)
-                // Stronger when further away (within radius), weaker when close to avoid overlapping
-                const force = (dist / radius);
-                targetX = (dx / dist) * force * 2.5;
-                targetY = (dy / dist) * force * 2.5;
-            }
-        }
-
-        // Apply Forces
-        // Increased separation to prevent clumping when following cursor
-        this.ax += sepX * 3.5 + alignX * 1.0 + cohX * 0.5 + targetX;
-        this.ay += sepY * 3.5 + alignY * 1.0 + cohY * 0.5 + targetY;
-
-        // Damping and Speed Limits
-        this.vx += this.ax * 0.05;
-        this.vy += this.ay * 0.05;
-
-        const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-        const maxSpeed = this.speed * (isTouching ? 1.5 : 1); // Swim faster on touch
-
-        if (speed > maxSpeed) {
-            this.vx = (this.vx / speed) * maxSpeed;
-            this.vy = (this.vy / speed) * maxSpeed;
-        } else if (speed < 1) {
-            this.vx = (this.vx / speed) * 1;
-            this.vy = (this.vy / speed) * 1;
-        }
-
-        this.x += this.vx;
-        this.y += this.vy;
-
-        // Smooth rotation
-        const desiredAngle = Math.atan2(this.vy, this.vx);
-        // Simple lerp for angle is tricky due to wrap-around (-PI to PI), 
-        // using exact velocity angle is usually fine for fish
-        this.angle = desiredAngle;
-
-        this.ax = 0;
-        this.ay = 0;
-
-        // Wrap Around Screen
-        if (this.x < -20) this.x = this.canvasWidth + 20;
-        if (this.x > this.canvasWidth + 20) this.x = -20;
-        if (this.y < -20) this.y = this.canvasHeight + 20;
-        if (this.y > this.canvasHeight + 20) this.y = -20;
-    }
-
-    draw(ctx: CanvasRenderingContext2D, elapsed: number) {
-        // Tail oscillation speed increases with speed
-        const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-        const tailAngle = Math.sin(elapsed * (0.1 + speed * 0.05) + this.tailO) * 0.4;
-
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-
-        ctx.fillStyle = this.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = this.color;
-
-        // Draw Organic Fish Body
-        ctx.beginPath();
-        ctx.moveTo(this.size * 2, 0); // Nose
-
-        // Body curves
-        ctx.bezierCurveTo(this.size, -this.size, -this.size, -this.size, -this.size * 1.5, 0);
-        ctx.bezierCurveTo(-this.size, this.size, this.size, this.size, this.size * 2, 0);
-        ctx.fill();
-
-        // Tail
-        ctx.save();
-        ctx.translate(-this.size * 1.5, 0);
-        ctx.rotate(tailAngle);
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-this.size * 1.5, -this.size * 0.8);
-        ctx.lineTo(-this.size * 1, 0);
-        ctx.lineTo(-this.size * 1.5, this.size * 0.8);
-        ctx.lineTo(0, 0);
-        ctx.fill();
-        ctx.restore();
-
-        ctx.restore();
     }
 }
 
+class RealisticFish {
+    pos: Vector;
+    vel: Vector;
+    acc: Vector;
+    maxSpeed: number;
+    maxForce: number;
+    spine: Spine;
+    colorBody: string;
+    colorFin: string;
+    sizeScale: number;
+    finPhase: number;
+
+    constructor(w: number, h: number) {
+        this.pos = { x: Math.random() * w, y: Math.random() * h };
+        const a = Math.random() * Math.PI * 2;
+        this.vel = { x: Math.cos(a), y: Math.sin(a) };
+        this.acc = { x: 0, y: 0 };
+
+        // Varying personalities
+        this.sizeScale = (Math.random() * 0.5 + 0.8) * CONFIG.fishSize;
+        this.maxSpeed = (Math.random() * 0.5 + 1.5);
+        this.maxForce = 0.05;
+
+        this.spine = new Spine(this.pos.x, this.pos.y, CONFIG.segmentCount, CONFIG.segmentLength * this.sizeScale);
+
+        // Realistic Koi Colors
+        const palettes = [
+            { body: "#fca5a5", fin: "#fecaca" }, // Red/White
+            { body: "#fda4af", fin: "#fce7f3" }, // Pink
+            { body: "#fb923c", fin: "#fdba74" }, // Orange (Gold)
+            { body: "#e2e8f0", fin: "#f1f5f9" }, // White/Silver
+            { body: "#fcd34d", fin: "#fde68a" }, // Yellow
+        ];
+        const p = palettes[Math.floor(Math.random() * palettes.length)];
+        this.colorBody = p.body;
+        this.colorFin = p.fin;
+
+        this.finPhase = Math.random() * Math.PI * 2;
+    }
+
+    applyBehaviors(fish: RealisticFish[], target: Point | null, isTouching: boolean) {
+        // Flocking
+        const sep = this.separate(fish);
+        const ali = this.align(fish);
+        const coh = this.cohesion(fish);
+
+        // Interaction
+        const mouse = this.interact(target);
+
+        // Weights
+        sep.x *= 2.5; sep.y *= 2.5;
+        ali.x *= 1.0; ali.y *= 1.0;
+        coh.x *= 1.0; coh.y *= 1.0;
+        mouse.x *= 3.0; mouse.y *= 3.0;
+
+        this.applyForce(sep);
+        this.applyForce(ali);
+        this.applyForce(coh);
+        this.applyForce(mouse);
+    }
+
+    applyForce(force: Vector) {
+        this.acc.x += force.x;
+        this.acc.y += force.y;
+    }
+
+    // Steering Behaviors
+    separate(fish: RealisticFish[]): Vector {
+        const desiredSeparation = 40 * this.sizeScale;
+        let sum = { x: 0, y: 0 };
+        let count = 0;
+        fish.forEach(other => {
+            const d = dist(this.pos, other.pos);
+            if (other !== this && d < desiredSeparation) {
+                const diff = { x: this.pos.x - other.pos.x, y: this.pos.y - other.pos.y };
+                sum.x += diff.x / d;
+                sum.y += diff.y / d;
+                count++;
+            }
+        });
+        if (count > 0) {
+            sum.x /= count; sum.y /= count;
+            const mag = Math.hypot(sum.x, sum.y);
+            if (mag > 0) {
+                sum.x = (sum.x / mag) * this.maxSpeed;
+                sum.y = (sum.y / mag) * this.maxSpeed;
+                sum.x -= this.vel.x;
+                sum.y -= this.vel.y;
+            }
+        }
+        return sum;
+    }
+
+    align(fish: RealisticFish[]): Vector {
+        const neighborDist = 80;
+        let sum = { x: 0, y: 0 };
+        let count = 0;
+        fish.forEach(other => {
+            const d = dist(this.pos, other.pos);
+            if (other !== this && d < neighborDist) {
+                sum.x += other.vel.x;
+                sum.y += other.vel.y;
+                count++;
+            }
+        });
+        if (count > 0) {
+            sum.x /= count; sum.y /= count;
+            const mag = Math.hypot(sum.x, sum.y);
+            if (mag > 0) {
+                sum.x = (sum.x / mag) * this.maxSpeed;
+                sum.y = (sum.y / mag) * this.maxSpeed;
+                sum.x -= this.vel.x;
+                sum.y -= this.vel.y;
+            }
+        }
+        return sum;
+    }
+
+    cohesion(fish: RealisticFish[]): Vector {
+        const neighborDist = 80;
+        let sum = { x: 0, y: 0 };
+        let count = 0;
+        fish.forEach(other => {
+            const d = dist(this.pos, other.pos);
+            if (other !== this && d < neighborDist) {
+                sum.x += other.pos.x;
+                sum.y += other.pos.y;
+                count++;
+            }
+        });
+        if (count > 0) {
+            sum.x /= count; sum.y /= count;
+            const desiredX = sum.x - this.pos.x;
+            const desiredY = sum.y - this.pos.y;
+            const mag = Math.hypot(desiredX, desiredY);
+            if (mag > 0) {
+                const sx = (desiredX / mag) * this.maxSpeed;
+                const sy = (desiredY / mag) * this.maxSpeed;
+                return { x: sx - this.vel.x, y: sy - this.vel.y };
+            }
+        }
+        return { x: 0, y: 0 };
+    }
+
+    interact(target: Point | null): Vector {
+        if (!target) return { x: 0, y: 0 };
+        const d = dist(this.pos, target);
+        if (d < 300) {
+            // Seek
+            const desiredX = target.x - this.pos.x;
+            const desiredY = target.y - this.pos.y;
+            const mag = Math.hypot(desiredX, desiredY);
+            // Arrive
+            let speed = this.maxSpeed * 2.5; // Sprint
+            if (d < 50) speed = (d / 50) * this.maxSpeed;
+
+            const sx = (desiredX / mag) * speed;
+            const sy = (desiredY / mag) * speed;
+            return { x: sx - this.vel.x, y: sy - this.vel.y };
+        }
+        return { x: 0, y: 0 };
+    }
+
+    update(w: number, h: number) {
+        this.vel.x += this.acc.x;
+        this.vel.y += this.acc.y;
+
+        // Speed Limit
+        const speed = Math.hypot(this.vel.x, this.vel.y);
+        if (speed > this.maxSpeed) {
+            this.vel.x = (this.vel.x / speed) * this.maxSpeed;
+            this.vel.y = (this.vel.y / speed) * this.maxSpeed;
+        }
+
+        this.pos.x += this.vel.x;
+        this.pos.y += this.vel.y;
+
+        // Wrap
+        const buffer = 50 * this.sizeScale;
+        if (this.pos.x < -buffer) this.pos.x = w + buffer;
+        if (this.pos.x > w + buffer) this.pos.x = -buffer;
+        if (this.pos.y < -buffer) this.pos.y = h + buffer;
+        if (this.pos.y > h + buffer) this.pos.y = -buffer;
+
+        this.acc.x = 0;
+        this.acc.y = 0;
+
+        // Update Spine
+        this.spine.update(this.pos.x, this.pos.y);
+
+        // Animate fins
+        this.finPhase += CONFIG.finSpeed;
+    }
+
+    draw(ctx: CanvasRenderingContext2D) {
+        const joints = this.spine.joints;
+        const angles = this.spine.angles;
+
+        // Draw Shadow (offset)
+        ctx.save();
+        ctx.translate(10, 10);
+        ctx.filter = "blur(4px)";
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        this.drawBodyPath(ctx, joints);
+        ctx.fill();
+        ctx.restore();
+
+        // Draw Fins (Pectoral)
+        const head = joints[0];
+        const headAngle = Math.atan2(this.vel.y, this.vel.x);
+        const finOffset = Math.sin(this.finPhase) * 0.5;
+
+        ctx.save();
+        ctx.translate(head.x, head.y);
+        ctx.rotate(headAngle);
+
+        // Left Fin
+        ctx.save();
+        ctx.translate(5 * this.sizeScale, 5 * this.sizeScale);
+        ctx.rotate(Math.PI / 3 + finOffset);
+        ctx.fillStyle = this.colorFin;
+        ctx.beginPath();
+        ctx.ellipse(10 * this.sizeScale, 0, 12 * this.sizeScale, 5 * this.sizeScale, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Right Fin
+        ctx.save();
+        ctx.translate(5 * this.sizeScale, -5 * this.sizeScale);
+        ctx.rotate(-Math.PI / 3 - finOffset);
+        ctx.fillStyle = this.colorFin;
+        ctx.beginPath();
+        ctx.ellipse(10 * this.sizeScale, 0, 12 * this.sizeScale, 5 * this.sizeScale, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.restore();
+
+        // Draw Body (Skin)
+        ctx.fillStyle = this.colorBody;
+        this.drawBodyPath(ctx, joints);
+        ctx.fill();
+
+        // Draw Eyes
+        ctx.save();
+        ctx.translate(head.x, head.y);
+        ctx.rotate(headAngle);
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.arc(8 * this.sizeScale, 4 * this.sizeScale, 1.5 * this.sizeScale, 0, Math.PI * 2);
+        ctx.arc(8 * this.sizeScale, -4 * this.sizeScale, 1.5 * this.sizeScale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    drawBodyPath(ctx: CanvasRenderingContext2D, joints: Point[]) {
+        const widths = [8, 10, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2].map(w => w * this.sizeScale);
+
+        ctx.beginPath();
+
+        // Right side of body
+        for (let i = 0; i < joints.length; i++) {
+            const angle = (i === 0)
+                ? Math.atan2(this.vel.y, this.vel.x)
+                : Math.atan2(joints[i].y - joints[i - 1].y, joints[i].x - joints[i - 1].x);
+
+            const perp = angle + Math.PI / 2;
+            const x = joints[i].x + Math.cos(perp) * widths[i];
+            const y = joints[i].y + Math.sin(perp) * widths[i];
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+
+        // Left side (reverse)
+        for (let i = joints.length - 1; i >= 0; i--) {
+            const angle = (i === 0)
+                ? Math.atan2(this.vel.y, this.vel.x)
+                : Math.atan2(joints[i].y - joints[i - 1].y, joints[i].x - joints[i - 1].x);
+
+            const perp = angle - Math.PI / 2;
+            const x = joints[i].x + Math.cos(perp) * widths[i];
+            const y = joints[i].y + Math.sin(perp) * widths[i];
+
+            ctx.lineTo(x, y);
+        }
+
+        ctx.closePath();
+    }
+}
+
+// --- Effects ---
 interface Ripple {
     x: number;
     y: number;
-    radius: number;
-    opacity: number;
+    r: number; // radius
+    o: number; // opacity
 }
 
+// --- Main Component ---
 interface FishAnimationProps {
-    frameCount?: number;
-    className?: string;
+    className?: string; // Kept for compatibility
+    frameCount?: number; // Kept (unused)
 }
 
-export default function FishAnimation({
-    frameCount = 40,
-    className = "",
-}: FishAnimationProps) {
+export default function FishAnimation({ className = "" }: FishAnimationProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -200,15 +375,14 @@ export default function FishAnimation({
         const container = containerRef.current;
         if (!canvas || !container) return;
 
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { alpha: true });
         if (!ctx) return;
 
-        let fishArray: Fish[] = [];
+        let fishArray: RealisticFish[] = [];
         let ripples: Ripple[] = [];
         let animationFrameId: number;
         let target: Point | null = null;
         let isTouching = false;
-        let frame = 0;
 
         const handleResize = () => {
             const { width, height } = container.getBoundingClientRect();
@@ -217,113 +391,85 @@ export default function FishAnimation({
             canvas.height = height * dpr;
             ctx.scale(dpr, dpr);
 
-            fishArray.forEach(f => {
-                f.canvasWidth = width;
-                f.canvasHeight = height;
-            });
-
             if (fishArray.length === 0) {
-                // Initialize fish random positions
-                for (let i = 0; i < frameCount; i++) {
-                    fishArray.push(new Fish(width, height));
+                for (let i = 0; i < CONFIG.fishCount; i++) {
+                    fishArray.push(new RealisticFish(width, height));
                 }
             }
         };
 
-        // Mouse Handlers
-        const handleMouseMove = (e: MouseEvent) => {
+        const handleInteraction = (x: number, y: number, touching: boolean) => {
             const rect = canvas.getBoundingClientRect();
-            target = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-            isTouching = false;
+            target = { x: x - rect.left, y: y - rect.top };
+            isTouching = touching;
+            // Spawn ripple
+            if (Math.random() > 0.8) {
+                ripples.push({ x: target.x, y: target.y, r: 5, o: 0.6 });
+            }
         };
 
-        const handleMouseLeave = () => { target = null; };
+        const handleEnd = () => { target = null; isTouching = false; };
 
-        // Touch Handlers
-        const handleTouchMove = (e: TouchEvent) => {
-            e.preventDefault(); // Prevent scrolling while interacting
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            target = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
-            isTouching = true;
-        };
+        // Event Listeners
+        window.addEventListener("resize", handleResize);
+        container.addEventListener("mousemove", e => handleInteraction(e.clientX, e.clientY, false));
+        container.addEventListener("mouseleave", handleEnd);
+        container.addEventListener("touchmove", e => {
+            e.preventDefault();
+            handleInteraction(e.touches[0].clientX, e.touches[0].clientY, true);
+        }, { passive: false });
+        container.addEventListener("touchstart", e => {
+            // e.preventDefault();
+            handleInteraction(e.touches[0].clientX, e.touches[0].clientY, true);
+        }, { passive: false });
+        container.addEventListener("touchend", handleEnd);
 
-        const handleTouchStart = (e: TouchEvent) => {
-            // e.preventDefault(); // Optional: might want to allow scroll start
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
+        // Init
+        handleResize();
 
-            target = { x, y };
-            isTouching = true;
-
-            // Spawn Ripple
-            ripples.push({ x, y, radius: 10, opacity: 1 });
-        };
-
-        const handleTouchEnd = () => {
-            target = null;
-            isTouching = false;
-        };
-
+        // Loop
         const animate = () => {
             const { width, height } = container.getBoundingClientRect();
+
             ctx.clearRect(0, 0, width, height);
 
-            // Draw Ripples
+            // 1. Draw Environment (Caustics simulation)
+            // Simple "Light Ray" overlay
+            // We can use a gradient or just nothing for transparency
+
+            // 2. Draw Ripples
+            ctx.lineWidth = 2;
             for (let i = ripples.length - 1; i >= 0; i--) {
                 const r = ripples[i];
                 ctx.beginPath();
-                ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(100, 200, 255, ${r.opacity})`;
-                ctx.lineWidth = 2;
+                ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${r.o})`;
                 ctx.stroke();
-
-                r.radius += 2;
-                r.opacity -= 0.02;
-
-                if (r.opacity <= 0) {
-                    ripples.splice(i, 1);
-                }
+                r.r += 2;
+                r.o -= 0.01;
+                if (r.o <= 0) ripples.splice(i, 1);
             }
 
-            // Update & Draw Fish
-            fishArray.forEach(fish => {
-                fish.update(fishArray, target, isTouching);
-                fish.draw(ctx, frame);
+            // 3. Draw Fish
+            fishArray.forEach(f => {
+                f.applyBehaviors(fishArray, target, isTouching);
+                f.update(width, height);
+                f.draw(ctx);
             });
 
-            frame++;
             animationFrameId = requestAnimationFrame(animate);
         };
-
-        window.addEventListener("resize", handleResize);
-        container.addEventListener("mousemove", handleMouseMove);
-        container.addEventListener("mouseleave", handleMouseLeave);
-
-        // Passive false for touch to allow prevention of default if needed
-        container.addEventListener("touchstart", handleTouchStart, { passive: false });
-        container.addEventListener("touchmove", handleTouchMove, { passive: false });
-        container.addEventListener("touchend", handleTouchEnd);
-
-
-        handleResize();
         animate();
 
         return () => {
             window.removeEventListener("resize", handleResize);
-            container.removeEventListener("mousemove", handleMouseMove);
-            container.removeEventListener("mouseleave", handleMouseLeave);
-            container.removeEventListener("touchstart", handleTouchStart);
-            container.removeEventListener("touchmove", handleTouchMove);
-            container.removeEventListener("touchend", handleTouchEnd);
+            // remove others...
             cancelAnimationFrame(animationFrameId);
         };
-    }, [frameCount]);
+    }, []);
 
     return (
-        <div ref={containerRef} className={`w-full h-full ${className} touch-none`}>
+        <div ref={containerRef} className={`w-full h-full ${className}`}>
             <canvas ref={canvasRef} className="block w-full h-full" />
         </div>
     );

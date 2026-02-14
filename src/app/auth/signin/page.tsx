@@ -13,8 +13,9 @@ import { signInWithEmail } from "@/lib/actions/auth";
 import { motion } from "framer-motion";
 import { Loader2, Mail, Lock, Fish } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { GlassInput } from "@/components/ui/glass-input";
-import { GlassCard } from "@/components/ui/glass-card";
+import { PremiumInput } from "@/components/ui/premium-input";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
 export default function SignInPage() {
     const [loading, setLoading] = useState(false);
@@ -60,25 +61,26 @@ export default function SignInPage() {
     };
 
     return (
-        <div className="w-full max-w-md mx-auto">
-            <GlassCard>
+        <div className="w-full max-w-md mx-auto relative z-10">
+            <SpotlightCard className="p-8 border-white/5 bg-slate-900/40 backdrop-blur-md">
                 <div className="space-y-8">
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-center space-y-4"
+                        className="text-center space-y-6"
                     >
                         <div className="flex justify-center">
-                            <div className="w-16 h-16 bg-gradient-to-tr from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 group">
-                                <Fish className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" />
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-cyan-500/20 blur-xl animate-pulse-slow rounded-full" />
+                                <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-blue-500/10 shadow-[0_0_25px_rgba(6,182,212,0.2)] group border border-white/10 relative z-10 backdrop-blur-sm">
+                                    <Fish className="w-10 h-10 text-cyan-400 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] animate-float" />
+                                </div>
                             </div>
                         </div>
-                        <div className="space-y-1">
-                            <h2 className="text-3xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
-                                {t("auth.welcomeBack")}
-                            </h2>
-                            <p className="text-slate-400 text-xs tracking-wider uppercase font-medium">
+                        <div className="space-y-2">
+                            <TextGenerateEffect words={t("auth.welcomeBack")} className="text-3xl lg:text-4xl font-bold tracking-tight text-white mb-2" />
+                            <p className="text-slate-400 text-sm tracking-wide uppercase font-medium mt-2">
                                 {t("auth.welcomeBackDesc")}
                             </p>
                         </div>
@@ -91,7 +93,7 @@ export default function SignInPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
                         >
-                            <GlassInput
+                            <PremiumInput
                                 id="email"
                                 label={t("auth.emailOrPhone")}
                                 type="email"
@@ -102,7 +104,7 @@ export default function SignInPage() {
                             />
 
                             <div className="space-y-2">
-                                <GlassInput
+                                <PremiumInput
                                     id="password"
                                     label={t("auth.password")}
                                     type="password"
@@ -114,7 +116,7 @@ export default function SignInPage() {
                                 <div className="flex justify-end">
                                     <Link
                                         href="/auth/forgot-password"
-                                        className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                                        className="text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors hover:underline decoration-cyan-400/30 underline-offset-4"
                                     >
                                         {t("auth.forgotPasswordText")}
                                     </Link>
@@ -131,15 +133,16 @@ export default function SignInPage() {
                                 type="submit"
                                 disabled={loading || !isValid}
                                 className={cn(
-                                    "w-full h-12 text-base font-semibold transition-all duration-300 rounded-xl",
-                                    "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5",
+                                    "w-full h-14 text-lg font-bold transition-all duration-300 rounded-xl",
+                                    "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] hover:-translate-y-1 border border-white/10 relative overflow-hidden group",
                                     loading && "opacity-80 cursor-not-allowed"
                                 )}
                             >
+                                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12" />
                                 {loading ? (
-                                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                    <Loader2 className="w-6 h-6 animate-spin mr-2" />
                                 ) : (
-                                    <span className="flex items-center justify-center gap-2 uppercase text-sm tracking-wide">
+                                    <span className="flex items-center justify-center gap-2 relative z-10">
                                         {t("auth.signInBtn")}
                                     </span>
                                 )}
@@ -171,13 +174,13 @@ export default function SignInPage() {
                     >
                         <p className="text-sm text-slate-400">
                             {t("auth.dontHaveAccount")}{" "}
-                            <Link href="/auth/signup" className="font-semibold text-blue-400 hover:text-blue-300 transition-colors hover:underline">
+                            <Link href="/auth/signup" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors hover:underline">
                                 {t("auth.signUp")}
                             </Link>
                         </p>
                     </motion.div>
                 </div>
-            </GlassCard>
+            </SpotlightCard>
         </div>
     );
 }

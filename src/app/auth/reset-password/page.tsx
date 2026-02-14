@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema, type ResetPasswordFormData } from "@/lib/validations/auth";
@@ -31,15 +31,14 @@ export default function ResetPasswordPage() {
     const password = watch("password");
 
     // Calculate password strength
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const pwd = e.target.value;
-        if (pwd) {
-            const result = zxcvbn(pwd);
+    useEffect(() => {
+        if (password) {
+            const result = zxcvbn(password);
             setPasswordStrength(result.score);
         } else {
             setPasswordStrength(0);
         }
-    };
+    }, [password]);
 
     const getStrengthColor = () => {
         switch (passwordStrength) {
@@ -111,7 +110,6 @@ export default function ResetPasswordPage() {
                                 type="password"
                                 placeholder="••••••••"
                                 {...register("password")}
-                                onChange={handlePasswordChange}
                                 error={errors.password?.message}
                             />
                             {password && (
