@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,93 +8,106 @@ import { useI18n } from "@/lib/i18n/provider";
 import { cn } from "@/lib/utils";
 import { Weight } from "lucide-react";
 import { useNumberFormat } from "@/hooks/use-number-format";
+import { useState } from "react";
 
-interface QuickEntryCardProps {
-    onSubmit: (data: { grossWeight: string; ratePerKg: string; sellerName?: string; buyerName?: string }) => void;
+export interface QuickEntryCardProps {
+    grossWeight: string;
+    ratePerKg: string;
+    sellerName: string;
+    buyerName: string;
+    activeField: "grossWeight" | "ratePerKg";
+    onGrossWeightChange: (value: string) => void;
+    onRatePerKgChange: (value: string) => void;
+    onSellerNameChange: (value: string) => void;
+    onBuyerNameChange: (value: string) => void;
+    onActiveFieldChange: (field: "grossWeight" | "ratePerKg") => void;
+    onSubmit: () => void;
     className?: string;
 }
 
-export function QuickEntryCard({ onSubmit, className }: QuickEntryCardProps) {
+export function QuickEntryCard({
+    grossWeight,
+    ratePerKg,
+    sellerName,
+    buyerName,
+    activeField,
+    onGrossWeightChange,
+    onRatePerKgChange,
+    onSellerNameChange,
+    onBuyerNameChange,
+    onActiveFieldChange,
+    onSubmit,
+    className
+}: QuickEntryCardProps) {
     const { t } = useI18n();
     const { format } = useNumberFormat();
-    const [activeField, setActiveField] = useState<"grossWeight" | "ratePerKg">("grossWeight");
-    const [grossWeight, setGrossWeight] = useState("0");
-    const [ratePerKg, setRatePerKg] = useState("0");
-    const [sellerName, setSellerName] = useState("");
-    const [buyerName, setBuyerName] = useState("");
     const [showOptional, setShowOptional] = useState(false);
 
     const handleValueChange = (value: string) => {
         if (activeField === "grossWeight") {
-            setGrossWeight(value);
+            onGrossWeightChange(value);
         } else {
-            setRatePerKg(value);
+            onRatePerKgChange(value);
         }
     };
 
     const handleNext = () => {
         if (activeField === "grossWeight" && parseFloat(grossWeight) > 0) {
-            setActiveField("ratePerKg");
+            onActiveFieldChange("ratePerKg");
         } else if (activeField === "ratePerKg" && parseFloat(ratePerKg) > 0) {
-            // Submit the data
-            onSubmit({
-                grossWeight,
-                ratePerKg,
-                sellerName: sellerName || undefined,
-                buyerName: buyerName || undefined,
-            });
+            onSubmit();
         }
     };
 
     const currentValue = activeField === "grossWeight" ? grossWeight : ratePerKg;
 
     return (
-        <div className={cn("space-y-2", className)}>
+        <div className={cn("flex flex-col h-full space-y-2", className)}>
             {/* New Entry Card */}
-            <Card className="bg-gradient-to-br from-blue-600 to-blue-700 border-0 text-white">
-                <CardHeader className="pb-2 pt-3 px-3">
+            <Card className="flex flex-col flex-1 bg-gradient-to-br from-blue-600 via-blue-600 to-blue-700 border-0 text-white overflow-hidden shadow-xl shadow-blue-900/20">
+                <CardHeader className="flex-shrink-0 pb-2 pt-3 px-3">
                     <CardTitle className="flex items-center gap-2 text-white text-base">
                         <Weight className="h-5 w-5" />
                         {t("dashboard.newTransaction")}
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 pb-3 px-3">
+                <CardContent className="flex flex-col flex-1 min-h-0 space-y-3 pb-3 px-3">
                     {/* Main Inputs */}
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="flex-shrink-0 grid grid-cols-2 gap-2">
                         {/* Gross Weight */}
                         <button
                             type="button"
-                            onClick={() => setActiveField("grossWeight")}
+                            onClick={() => onActiveFieldChange("grossWeight")}
                             className={cn(
-                                "flex flex-col items-start p-3 rounded-xl transition-all",
+                                "flex flex-col items-start p-3 rounded-xl transition-all duration-200 active:scale-95",
                                 activeField === "grossWeight"
-                                    ? "bg-white/20 ring-2 ring-white/50"
-                                    : "bg-white/10 hover:bg-white/15"
+                                    ? "bg-white/20 ring-2 ring-white/50 shadow-lg"
+                                    : "bg-white/10 hover:bg-white/15 hover:shadow-md"
                             )}
                         >
-                            <Label className="text-xs text-white/80 mb-1">
+                            <Label className="text-xs text-white/80 mb-1 cursor-pointer">
                                 {t("transactions.grossWeight")}
                             </Label>
                             <div className="flex items-baseline gap-1">
-                                <span className="text-2xl sm:text-3xl font-bold text-white">
+                                <span className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                                     {activeField === "grossWeight" ? format(currentValue) : format(grossWeight)}
                                 </span>
-                                <span className="text-sm text-white/60">kg</span>
+                                <span className="text-sm text-white/60 font-medium">kg</span>
                             </div>
                         </button>
 
                         {/* Rate per Kg */}
                         <button
                             type="button"
-                            onClick={() => setActiveField("ratePerKg")}
+                            onClick={() => onActiveFieldChange("ratePerKg")}
                             className={cn(
-                                "flex flex-col items-start p-3 rounded-xl transition-all",
+                                "flex flex-col items-start p-3 rounded-xl transition-all duration-200 active:scale-95",
                                 activeField === "ratePerKg"
-                                    ? "bg-white/20 ring-2 ring-white/50"
-                                    : "bg-white/10 hover:bg-white/15"
+                                    ? "bg-white/20 ring-2 ring-white/50 shadow-lg"
+                                    : "bg-white/10 hover:bg-white/15 hover:shadow-md"
                             )}
                         >
-                            <Label className="text-xs text-white/80 mb-1">
+                            <Label className="text-xs text-white/80 mb-1 cursor-pointer">
                                 {t("transactions.ratePerKg")}
                             </Label>
                             <div className="flex items-baseline gap-1">
@@ -111,19 +123,19 @@ export function QuickEntryCard({ onSubmit, className }: QuickEntryCardProps) {
                     <button
                         type="button"
                         onClick={() => setShowOptional(!showOptional)}
-                        className="w-full text-center text-sm text-white/80 hover:text-white transition-colors py-2"
+                        className="flex-shrink-0 w-full text-center text-sm text-white/80 hover:text-white transition-colors py-1"
                     >
                         {showOptional ? "▼" : "▶"} {t("common.optional")} {t("common.details")}
                     </button>
 
                     {/* Optional Details */}
                     {showOptional && (
-                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/20">
+                        <div className="flex-shrink-0 grid grid-cols-2 gap-3 pt-2 border-t border-white/20">
                             <div>
                                 <Label className="text-xs text-white/80">{t("transactions.sellerName")}</Label>
                                 <Input
                                     value={sellerName}
-                                    onChange={(e) => setSellerName(e.target.value)}
+                                    onChange={(e) => onSellerNameChange(e.target.value)}
                                     placeholder={t("common.optional")}
                                     className="bg-white/10 border-white/20 text-white placeholder:text-white/40 mt-1"
                                 />
@@ -132,24 +144,26 @@ export function QuickEntryCard({ onSubmit, className }: QuickEntryCardProps) {
                                 <Label className="text-xs text-white/80">{t("transactions.buyer")} {t("common.name")}</Label>
                                 <Input
                                     value={buyerName}
-                                    onChange={(e) => setBuyerName(e.target.value)}
+                                    onChange={(e) => onBuyerNameChange(e.target.value)}
                                     placeholder={t("common.optional")}
                                     className="bg-white/10 border-white/20 text-white placeholder:text-white/40 mt-1"
                                 />
                             </div>
                         </div>
                     )}
+
+                    {/* Number Pad */}
+                    <div className="flex-1 min-h-[220px]">
+                        <NumberPad
+                            value={currentValue}
+                            onValueChange={handleValueChange}
+                            onSubmit={handleNext}
+                            className="px-2 h-full"
+                            maxLength={8}
+                        />
+                    </div>
                 </CardContent>
             </Card>
-
-            {/* Number Pad */}
-            <NumberPad
-                value={currentValue}
-                onValueChange={handleValueChange}
-                onSubmit={handleNext}
-                className="px-2"
-                maxLength={8}
-            />
         </div>
     );
 }

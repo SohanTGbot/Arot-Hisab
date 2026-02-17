@@ -238,16 +238,16 @@ export function TransactionForm({ onSubmit, initialData, isEdit }: TransactionFo
                 {calculation ? (
                     <div className="grid grid-cols-3 gap-2 mb-3">
                         <div className="bg-muted/50 p-2 rounded-lg text-center">
-                            <div className="text-[10px] text-muted-foreground uppercase font-semibold">Net Wt</div>
-                            <div className="font-bold text-sm">{(calculation.netWeightKg).toFixed(3)} <span className="text-[10px] font-normal text-muted-foreground">kg</span></div>
+                            <div className="text-xs text-muted-foreground uppercase font-semibold">Net Wt</div>
+                            <div className="font-bold text-lg">{(calculation.netWeightKg).toFixed(3)} <span className="text-xs font-normal text-muted-foreground">kg</span></div>
                         </div>
                         <div className="bg-muted/50 p-2 rounded-lg text-center">
-                            <div className="text-[10px] text-muted-foreground uppercase font-semibold">Rate</div>
-                            <div className="font-bold text-sm">₹{calculation.ratePerKg}</div>
+                            <div className="text-xs text-muted-foreground uppercase font-semibold">Rate</div>
+                            <div className="font-bold text-lg">₹{calculation.ratePerKg}</div>
                         </div>
                         <div className="bg-primary/10 p-2 rounded-lg text-center border border-primary/20">
-                            <div className="text-[10px] text-primary uppercase font-bold">Total</div>
-                            <div className="font-bold text-sm text-primary">₹{Math.round(calculation.finalAmount).toLocaleString()}</div>
+                            <div className="text-xs text-primary uppercase font-bold">Total</div>
+                            <div className="font-bold text-xl text-primary">₹{Math.round(calculation.finalAmount).toLocaleString()}</div>
                         </div>
                     </div>
                 ) : (

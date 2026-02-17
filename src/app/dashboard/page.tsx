@@ -3,11 +3,11 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Receipt, TrendingUp, Users, DollarSign, Plus, ArrowRight, FileText, Activity, Wallet } from "lucide-react";
+import { Receipt, TrendingUp, Users, DollarSign, ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
 import { useTransactions } from "@/hooks/queries/use-transactions";
 import { useSavedContacts } from "@/hooks/queries/use-contacts";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/provider";
 import { StatCard, QuickAction, ActivityItem } from "@/components/dashboard/dashboard-components";
 import { DashboardSkeleton } from "@/components/loading-skeletons";
@@ -15,86 +15,51 @@ import { EmptyState } from "@/components/empty-state";
 import { formatDistanceToNow } from "@/lib/utils";
 import { useNumberFormat } from "@/hooks/use-number-format";
 import { motion } from "framer-motion";
-import { ExtendedMobileFAB } from "@/components/mobile-fab";
-import { QuickEntryCard } from "@/components/dashboard/quick-entry-card";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { ThemeSwitcher } from "@/components/theme/theme-switcher";
-import { calculateTransaction } from "@/lib/calculations";
-import { MobileFitContainer } from "@/components/mobile-fit-container";
 import { LatestCalculationCard } from "@/components/dashboard/latest-calculation-card";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function DashboardPage() {
     const router = useRouter();
     const { t, language } = useI18n();
     const { formatCurrency, format } = useNumberFormat();
-    const [showQuickEntry, setShowQuickEntry] = useState(false);
-    const [currentCalculation, setCurrentCalculation] = useState<{
-        grossWeight: number;
-        ratePerKg: number;
-        netWeight: number;
-        baseAmount: number;
-        finalAmount: number;
-        sellerName?: string;
-        buyerName?: string;
-    } | null>(null);
+    const { user } = useAuth();
+
+    const greeting = useMemo(() => {
+        const hour = new Date().getHours();
+        if (hour < 12) return t("dashboard.goodMorning");
+        if (hour < 18) return t("dashboard.goodAfternoon");
+        return t("dashboard.goodEvening");
+    }, [t]);
+
+    const currentDate = useMemo(() => {
+        return new Date().toLocaleDateString(language === 'bn' ? 'bn-BD' : 'en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }, [language]);
 
     const {
         data: transactions = [],
         isPending: transactionsPending,
         error: transactionsError,
-        refetch: refetchTransactions
     } = useTransactions();
 
     const {
         data: contacts = [],
         isPending: contactsPending,
         error: contactsError,
-        refetch: refetchContacts
     } = useSavedContacts();
-
-    const handleRefresh = async () => {
-        await Promise.all([refetchTransactions(), refetchContacts()]);
-    };
-
-    const handleQuickEntry = (data: { grossWeight: string; ratePerKg: string; sellerName?: string; buyerName?: string }) => {
-        const grossWeight = parseFloat(data.grossWeight);
-        const ratePerKg = parseFloat(data.ratePerKg);
-
-        // Calculate using central logic
-        const result = calculateTransaction({
-            grossWeightKg: grossWeight,
-            ratePerKg: ratePerKg,
-            deductionMethod: "B", // Default to Method B as per requirements
-            deductionPercent: 5,
-            commissionPercent: 2
-        });
-
-        // Update current calculation for display
-        setCurrentCalculation({
-            grossWeight: result.grossWeightKg,
-            ratePerKg: result.ratePerKg,
-            netWeight: result.netWeightKg,
-            baseAmount: result.baseAmount,
-            finalAmount: result.finalAmount,
-            sellerName: data.sellerName,
-            buyerName: data.buyerName,
-        });
-
-        // Play success sound
-        import('@/lib/sounds/sound-manager').then(({ soundManager }) => {
-            soundManager.play('success');
-        });
-
-        // Show success message
-        toast.success(t("dashboard.calculationComplete"));
-    };
 
     const stats = useMemo(() => {
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const lastMonthStart = new Date(now.getFullYear(), now.getMonth(), 1); // Fixed logic below
+        // Fix: lastMonthStart should be month - 1
+        const actualLastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
 
         const todayTransactions = transactions.filter(
@@ -106,7 +71,7 @@ export default function DashboardPage() {
         const lastMonthTransactions = transactions.filter(
             (t: any) => {
                 const date = new Date(t.created_at);
-                return date >= lastMonthStart && date <= lastMonthEnd;
+                return date >= actualLastMonthStart && date <= lastMonthEnd;
             }
         );
 
@@ -142,8 +107,6 @@ export default function DashboardPage() {
             : null;
     }, [transactions]);
 
-    // Only show skeleton on INITIAL load when no data is available
-    // Persistence will provide stale data immediately on reload/tab switch
     if ((transactionsPending && transactions.length === 0) || (contactsPending && contacts.length === 0)) {
         return (
             <DashboardLayout>
@@ -160,42 +123,34 @@ export default function DashboardPage() {
                 <div className="container p-4 flex items-center justify-center min-h-[50vh]">
                     <div className="text-center space-y-4">
                         <p className="text-red-500">Failed to load dashboard data</p>
-                        <p className="text-sm text-muted-foreground">
-                            {transactionsError instanceof Error ? transactionsError.message : ""}
-                            {contactsError instanceof Error ? (transactionsError ? " | " : "") + contactsError.message : ""}
-                            {!transactionsError && !contactsError ? "Unknown error" : ""}
-                        </p>
                     </div>
                 </div>
             </DashboardLayout>
         );
     }
 
+    const userName = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || t("common.welcome");
+
     return (
         <DashboardLayout>
-            {/* Mobile View - Scaled, No Scroll */}
-            <div className="lg:hidden h-full">
-                <MobileFitContainer headerHeight={80} bottomNavHeight={96}>
-                    <div className="space-y-3 px-1 pt-0 pb-1">
-                        <LatestCalculationCard
-                            currentCalculation={currentCalculation}
-                            latestTransaction={latestTransaction}
-                        />
-                        <QuickEntryCard onSubmit={handleQuickEntry} />
+            <div className="space-y-6">
+                {/* Greeting Section */}
+                <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 pb-2">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                            {greeting}, {userName}
+                        </h1>
+                        <p className="text-muted-foreground mt-1">{t("dashboard.welcome")}</p>
                     </div>
-                </MobileFitContainer>
-            </div>
-
-            {/* Desktop Content - Hidden on Mobile */}
-            <div className="hidden lg:block space-y-6">
-                <LatestCalculationCard
-                    currentCalculation={currentCalculation}
-                    latestTransaction={latestTransaction}
-                    className="mb-6"
-                />
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium bg-white/50 dark:bg-zinc-800/50 backdrop-blur-md px-4 py-1.5 rounded-full border border-border/50 shadow-sm">
+                            {currentDate}
+                        </span>
+                    </div>
+                </div>
 
                 {/* Stats Grid */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
                     <StatCard
                         title={t("dashboard.totalTransactions")}
                         value={stats.totalTransactions.toString()}
@@ -222,6 +177,13 @@ export default function DashboardPage() {
                     />
                 </div>
 
+                {/* Latest Calculation - Shown here as well for quick access */}
+                <LatestCalculationCard
+                    currentCalculation={null} // Only show historical latest here
+                    latestTransaction={latestTransaction}
+                    className="mb-6"
+                />
+
                 {/* Quick Actions */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -231,10 +193,10 @@ export default function DashboardPage() {
                     <h2 className="text-xl font-semibold mb-4">{t("dashboard.quickActions")}</h2>
                     <div className="grid gap-4 md:grid-cols-3">
                         <QuickAction
-                            title={t("dashboard.quickActionNewTransaction")}
-                            description={t("dashboard.quickActionNewTransactionDesc")}
+                            title={t("nav.calculator")}
+                            description="Go to Calculator"
                             icon={FileText}
-                            onClick={() => setShowQuickEntry(true)}
+                            onClick={() => router.push("/calculator")}
                             gradient="from-blue-500 to-cyan-500"
                         />
                         <QuickAction

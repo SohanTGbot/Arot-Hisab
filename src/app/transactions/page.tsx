@@ -42,15 +42,18 @@ export default function TransactionsPage() {
         const query = searchQuery.toLowerCase();
         return allTransactions.filter(
             (t: any) =>
-                t.buyer_name?.toLowerCase().includes(query) ||
-                t.seller_name?.toLowerCase().includes(query) ||
-                t.fish_type?.toLowerCase().includes(query) ||
-                t.notes?.toLowerCase().includes(query)
+                (t.buyer_name || "").toLowerCase().includes(query) ||
+                (t.seller_name || "").toLowerCase().includes(query) ||
+                (t.fish_type || "").toLowerCase().includes(query) ||
+                (t.notes || "").toLowerCase().includes(query)
         );
     }, [allTransactions, searchQuery]);
 
     const totalRevenue = useMemo(() => {
-        return transactions.reduce((sum: number, t: any) => sum + (t.commission_amount || 0), 0);
+        return transactions.reduce((sum: number, t: any) => {
+            const commission = ((t.base_amount || 0) * (t.commission_percent || 0)) / 100;
+            return sum + commission;
+        }, 0);
     }, [transactions]);
 
     if (isLoading && allTransactions.length === 0) {
@@ -194,16 +197,16 @@ export default function TransactionsPage() {
                                             <TableCell>{transaction.buyer_name}</TableCell>
                                             <TableCell>{transaction.seller_name}</TableCell>
                                             <TableCell>
-                                                <Badge variant="outline">{transaction.fish_type}</Badge>
+                                                <Badge variant="outline">{transaction.fish_type || "N/A"}</Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                {format(transaction.total_weight.toFixed(3))} kg
+                                                {format((transaction.gross_weight_kg || 0).toFixed(3))} kg
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                {formatCurrency(transaction.rate)}
+                                                {formatCurrency(transaction.rate_per_kg || 0)}
                                             </TableCell>
                                             <TableCell className="text-right font-medium text-green-600">
-                                                {formatCurrency(transaction.commission_amount || 0)}
+                                                {formatCurrency(((transaction.base_amount || 0) * (transaction.commission_percent || 0)) / 100)}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button variant="ghost" size="sm" asChild>

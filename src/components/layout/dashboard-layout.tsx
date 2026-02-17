@@ -35,10 +35,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="flex flex-col h-[100dvh] overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            {/* Header - Fixed height, standard flex item */}
             <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
-            <div className="flex h-[calc(100vh-4rem)]">
+            {/* Main Layout Area - Takes remaining space */}
+            <div className="flex flex-1 overflow-hidden relative">
                 {/* Mobile Sidebar Overlay */}
                 {sidebarOpen && (
                     <div
@@ -50,23 +52,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 {/* Sidebar */}
                 <div
                     className={cn(
-                        "fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+                        "fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 h-full",
                         sidebarOpen ? "translate-x-0" : "-translate-x-full"
                     )}
                 >
                     <Sidebar className="h-full" />
                 </div>
 
-                {/* Main Content - Adjusted padding for new bottom nav height */}
-                <main className="flex-1 overflow-y-auto p-4 pb-24 md:p-6 md:pb-6 lg:p-8">
-                    <div className="mx-auto max-w-7xl">
+                {/* Main Content - Scrollable Area */}
+                <main className="flex-1 overflow-y-auto w-full p-2 md:p-6 lg:p-8">
+                    <div className="mx-auto max-w-7xl min-h-full">
                         {children}
                     </div>
                 </main>
             </div>
 
-            {/* Mobile Bottom Navigation */}
-            <MobileBottomNav />
+            {/* Mobile Bottom Navigation - Pushed to bottom by flex layout, no overlap possible */}
+            <MobileBottomNav className="flex-none md:hidden" />
         </div>
     );
 }

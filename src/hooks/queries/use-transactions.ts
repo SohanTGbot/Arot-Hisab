@@ -63,7 +63,7 @@ export function useCreateTransaction() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (data: Omit<TablesInsert<'transactions'>, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
+        mutationFn: async (data: Parameters<typeof createTransaction>[0]) => {
             const result = await createTransaction(data);
             if (!result.success) throw new Error(result.error);
             return result.data;

@@ -1,4 +1,5 @@
 "use client";
+// Force rebuild
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -63,45 +64,35 @@ export default function SignInPage() {
 
     return (
         <div className="w-full max-w-md mx-auto relative z-10 px-4 sm:px-0">
-            <SpotlightCard className="p-6 md:p-8 border-white/5 bg-slate-900/40 backdrop-blur-md">
+            <SpotlightCard className="p-6 md:p-8 border-white/5 bg-slate-900/40 backdrop-blur-md shadow-2xl">
                 <div className="space-y-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-center space-y-6"
-                    >
+                    <div className="text-center space-y-6">
                         <div className="flex justify-center">
                             <div className="relative">
-                                <div className="absolute -inset-4 bg-cyan-500/20 blur-xl animate-pulse-slow rounded-full" />
-                                <div className="relative flex justify-center">
-                                    <Image
-                                        src="/logo.png"
-                                        alt="Arot Hisab"
-                                        width={0}
-                                        height={0}
-                                        sizes="100vw"
-                                        className="w-auto h-20 object-contain drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-                                        priority
-                                    />
-                                </div>
+                                <div className="absolute -inset-2 bg-primary/20 blur-xl rounded-full" />
+                                <Image
+                                    src="/logo.png"
+                                    alt="Arot Hisab"
+                                    width={0}
+                                    height={0}
+                                    sizes="100vw"
+                                    className="w-auto h-20 object-contain relative"
+                                    priority
+                                />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <TextGenerateEffect words={t("auth.welcomeBack")} className="text-3xl lg:text-4xl font-bold tracking-tight text-white mb-2" />
+                            <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-white mb-2">
+                                {t("auth.welcomeBack")}
+                            </h1>
                             <p className="text-slate-400 text-sm tracking-wide uppercase font-medium mt-2">
                                 {t("auth.welcomeBackDesc")}
                             </p>
                         </div>
-                    </motion.div>
+                    </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        <motion.div
-                            className="space-y-5"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                        >
+                        <div className="space-y-5">
                             <PremiumInput
                                 id="email"
                                 label={t("auth.emailOrPhone")}
@@ -131,13 +122,9 @@ export default function SignInPage() {
                                     </Link>
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
+                        <div>
                             <Button
                                 type="submit"
                                 disabled={loading || !isValid}
@@ -156,15 +143,10 @@ export default function SignInPage() {
                                     </span>
                                 )}
                             </Button>
-                        </motion.div>
+                        </div>
                     </form>
 
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="relative py-2"
-                    >
+                    <div className="relative py-2">
                         <div className="absolute inset-0 flex items-center">
                             <span className="w-full border-t border-slate-700/50" />
                         </div>
@@ -173,21 +155,16 @@ export default function SignInPage() {
                                 {t("auth.orContinueWith")}
                             </span>
                         </div>
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                        className="text-center"
-                    >
+                    <div className="text-center">
                         <p className="text-sm text-slate-400">
                             {t("auth.dontHaveAccount")}{" "}
                             <Link href="/auth/signup" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors hover:underline">
                                 {t("auth.signUp")}
                             </Link>
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
             </SpotlightCard>
         </div>

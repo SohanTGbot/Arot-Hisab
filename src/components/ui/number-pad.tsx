@@ -66,7 +66,7 @@ export function NumberPad({
     }
 
     return (
-        <div className={cn("grid grid-cols-4 gap-1.5 sm:gap-2 p-1 rounded-2xl bg-gradient-to-br from-gray-50 to-white select-none", className)}>
+        <div className={cn("grid grid-cols-4 grid-rows-4 gap-1.5 sm:gap-2 p-1 rounded-2xl bg-gradient-to-br from-gray-50 to-white select-none h-full", className)}>
             {/* Row 1 */}
             <NumButton onClick={() => handleNumberClick("7")}>{format("7")}</NumButton>
             <NumButton onClick={() => handleNumberClick("8")}>{format("8")}</NumButton>
@@ -135,7 +135,7 @@ function NumButton({ children, className, ...props }: NumButtonProps) {
         <button
             type="button"
             className={cn(
-                "group relative flex items-center justify-center h-12 sm:h-14 w-full text-xl sm:text-2xl font-semibold",
+                "group relative flex items-center justify-center h-full w-full text-xl sm:text-2xl font-semibold",
                 "bg-gradient-to-br from-white to-gray-50 text-gray-900",
                 "border border-gray-200 hover:border-blue-300",
                 "rounded-xl shadow-sm hover:shadow-md",
@@ -143,6 +143,7 @@ function NumButton({ children, className, ...props }: NumButtonProps) {
                 "active:scale-95 hover:scale-[1.02]",
                 "touch-target",
                 "overflow-hidden",
+                "min-h-[48px]", // Ensure minimum touch target
                 className
             )}
             {...props}
@@ -160,11 +161,12 @@ function ActionButton({ children, className, ...props }: NumButtonProps) {
         <button
             type="button"
             className={cn(
-                "flex items-center justify-center h-12 sm:h-14 w-full",
+                "flex items-center justify-center h-full w-full",
                 "rounded-xl shadow-sm hover:shadow-md",
                 "transition-all duration-200",
                 "active:scale-95 hover:scale-[1.02]",
                 "touch-target font-semibold",
+                "min-h-[48px]", // Ensure minimum touch target
                 className
             )}
             {...props}

@@ -12,7 +12,7 @@ type TransactionUpdate = TablesUpdate<'transactions'>;
 /**
  * Create a new transaction
  */
-export async function createTransaction(data: Omit<TransactionInsert, 'id' | 'created_at' | 'updated_at' | 'net_weight_kg' | 'base_amount' | 'final_amount'> & { deduction_percent?: number }) {
+export async function createTransaction(data: Omit<TransactionInsert, 'id' | 'created_at' | 'updated_at' | 'net_weight_kg' | 'base_amount' | 'final_amount' | 'user_id'> & { deduction_percent?: number }) {
     const supabase = await createClient();
 
     // Get current user
@@ -23,19 +23,23 @@ export async function createTransaction(data: Omit<TransactionInsert, 'id' | 'cr
     }
 
     // Calculate the transaction values
+    // Calculate the transaction values
     const calculation = calculateTransaction({
         grossWeightKg: data.gross_weight_kg,
         ratePerKg: data.rate_per_kg,
         deductionMethod: data.deduction_method as 'A' | 'B',
-        deductionPercent: data.deduction_percent,
-        commissionPercent: data.commission_percent,
+        deductionPercent: data.deduction_percent ?? undefined,
+        commissionPercent: data.commission_percent ?? undefined,
     });
+
+    // Remove deduction_percent from insert data
+    const { deduction_percent, ...insertData } = data;
 
     // Insert transaction
     const { data: transaction, error } = await supabase
         .from('transactions')
         .insert({
-            ...data,
+            ...insertData,
             user_id: user.id,
             net_weight_kg: calculation.netWeightKg,
             base_amount: calculation.baseAmount,
@@ -136,7 +140,7 @@ export async function updateTransaction(id: string, updates: TransactionUpdate &
                 ratePerKg: updates.rate_per_kg ?? existing.rate_per_kg,
                 deductionMethod: (updates.deduction_method ?? existing.deduction_method) as 'A' | 'B',
                 deductionPercent: updates.deduction_percent ?? 5, // Default if not provided
-                commissionPercent: updates.commission_percent ?? existing.commission_percent,
+                commissionPercent: updates.commission_percent ?? existing.commission_percent ?? undefined,
             });
 
             updates.net_weight_kg = calculation.netWeightKg;

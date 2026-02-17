@@ -14,6 +14,7 @@
         "realtimeResults": "Real-time calculation results",
         "next": "Next",
         "cancel": "Cancel",
+        "clear": "Clear",
         "save": "Save",
         "delete": "Delete",
         "edit": "Edit",
@@ -41,6 +42,7 @@
     "nav": {
         "home": "Home",
         "dashboard": "Dashboard",
+        "calculator": "Calculator",
         "transactions": "Transactions",
         "contacts": "Contacts",
         "profile": "Profile",
@@ -124,7 +126,10 @@
         "calcRate": "Rate per KG",
         "calcBaseAmount": "Base Amount",
         "calcFinalAmount": "Final Amount",
-        "calcBuyerName": "Buyer Name"
+        "calcBuyerName": "Buyer Name",
+        "goodMorning": "Good Morning",
+        "goodAfternoon": "Good Afternoon",
+        "goodEvening": "Good Evening"
     },
     "transactions": {
         "title": "Transactions",

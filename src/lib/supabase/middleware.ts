@@ -43,8 +43,10 @@ export async function updateSession(request: NextRequest) {
         (request.nextUrl.pathname.startsWith("/dashboard") ||
             request.nextUrl.pathname.startsWith("/transactions") ||
             request.nextUrl.pathname.startsWith("/profile") ||
+            request.nextUrl.pathname.startsWith("/profile") ||
             request.nextUrl.pathname.startsWith("/settings") ||
             request.nextUrl.pathname.startsWith("/contacts") ||
+            request.nextUrl.pathname.startsWith("/calculator") ||
             request.nextUrl.pathname.startsWith("/donate") ||
             request.nextUrl.pathname.startsWith("/feedback") ||
             request.nextUrl.pathname.startsWith("/admin"))
